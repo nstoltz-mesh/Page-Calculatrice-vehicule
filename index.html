@@ -283,6 +283,27 @@ tr.total-row td { font-weight: 700; color: var(--vert-fonce); border-top: 2px so
 }
 
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== SLIDER ===== */
+.slider-group{margin-bottom:16px}
+.slider-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.slider-header label{font-size:.81rem;font-weight:600;color:var(--vert-fonce)}
+.slider-value-display{font-size:.85rem;font-weight:700;color:var(--teal);background:rgba(1,132,118,.09);border-radius:6px;padding:2px 10px;min-width:78px;text-align:right;white-space:nowrap}
+.slider-row{display:flex;align-items:center;gap:10px}
+.slider-row input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:5px;border-radius:99px;background:linear-gradient(to right,var(--teal) 0%,var(--teal) var(--pct,50%),#e0e0e0 var(--pct,50%),#e0e0e0 100%);outline:none;cursor:pointer;border:none;padding:0;margin:0}
+.slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:var(--blanc);border:2.5px solid var(--teal);box-shadow:0 1px 5px rgba(0,34,28,.2);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.slider-row input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2);box-shadow:0 2px 8px rgba(1,132,118,.35)}
+.slider-row input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--blanc);border:2.5px solid var(--teal);cursor:pointer}
+.slider-row input[type=range]:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+.slider-minmax{display:flex;justify-content:space-between;font-size:.67rem;color:#ccc;margin-top:3px;padding:0 1px}
+/* ===== SELECT ===== */
+.select-group{margin-bottom:16px}
+.select-group label{display:block;font-size:.81rem;font-weight:600;color:var(--vert-fonce);margin-bottom:5px}
+.select-wrap{position:relative}
+.select-wrap::after{content:'';position:absolute;right:12px;top:50%;transform:translateY(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--teal);pointer-events:none}
+select{width:100%;padding:9px 32px 9px 12px;border:1.5px solid #e0e0e0;border-radius:8px;font-family:'Inter',sans-serif;font-size:.87rem;color:var(--texte);background:var(--blanc);cursor:pointer;-webkit-appearance:none;appearance:none;transition:border-color var(--transition),box-shadow var(--transition)}
+select:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(1,132,118,.1)}
+
 </style>
 </head>
 <body>
@@ -340,11 +361,19 @@ tr.total-row td { font-weight: 700; color: var(--vert-fonce); border-top: 2px so
         Scénario Achat
       </h2>
       <p class="panel-subtitle">Financement — coût total de possession</p>
-      <div class="form-group"><label for="a1_prix">Prix du véhicule <span class="hint">(avant taxes)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="a1_prix" value="35000" min="0" step="500" aria-describedby="a1_prix_note"></div></div>
-      <div class="form-group"><label for="a1_mise">Mise de fonds</label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="a1_mise" value="5000" min="0" step="500"></div></div>
-      <div class="form-group"><label for="a1_taux">Taux d'intérêt annuel <span class="hint">(%)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">%</span><input type="number" id="a1_taux" value="6.99" min="0" step="0.01"></div></div>
-      <div class="form-group"><label for="a1_terme">Terme financement <span class="hint">(mois)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">#</span><input type="number" id="a1_terme" value="60" min="12" max="96" step="12"></div></div>
-      <div class="form-group"><label for="a1_residuel">Valeur résiduelle à terme <span class="hint">(%)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">%</span><input type="number" id="a1_residuel" value="40" min="0" max="90" step="1"></div></div>
+      <div class="slider-group"><div class="slider-header"><label for="a1_prix">Prix du véhicule <span class="hint">(avant taxes)</span></label><span class="slider-value-display" id="a1_prix_disp">…</span></div><div class="slider-row"><input type="range" id="a1_prix" min="5000" max="150000" step="500" value="35000" style="--pct:21%" oninput="this.style.setProperty('--pct',(((this.value-5000)/(150000-5000))*100)+'%');document.getElementById('a1_prix_disp').textContent='$\u00a0' + Number(this.value).toLocaleString('fr-CA');" aria-label="Prix du véhicule"></div><div class="slider-minmax"><span>5000</span><span>150000</span></div></div>
+      <div class="slider-group"><div class="slider-header"><label for="a1_mise">Mise de fonds </label><span class="slider-value-display" id="a1_mise_disp">…</span></div><div class="slider-row"><input type="range" id="a1_mise" min="0" max="50000" step="500" value="5000" style="--pct:10%" oninput="this.style.setProperty('--pct',(((this.value-0)/(50000-0))*100)+'%');document.getElementById('a1_mise_disp').textContent='$\u00a0' + Number(this.value).toLocaleString('fr-CA');" aria-label="Mise de fonds"></div><div class="slider-minmax"><span>0</span><span>50000</span></div></div>
+      <div class="slider-group"><div class="slider-header"><label for="a1_taux">Taux d'intérêt annuel <span class="hint">(%)</span></label><span class="slider-value-display" id="a1_taux_disp">…</span></div><div class="slider-row"><input type="range" id="a1_taux" min="0" max="20" step="0.25" value="6.99" style="--pct:35%" oninput="this.style.setProperty('--pct',(((this.value-0)/(20-0))*100)+'%');document.getElementById('a1_taux_disp').textContent=Number(this.value).toLocaleString('fr-CA',{minimumFractionDigits:2,maximumFractionDigits:2}) + '\u00a0%';" aria-label="Taux d'intérêt annuel"></div><div class="slider-minmax"><span>0</span><span>20</span></div></div>
+      <div class="select-group"><label for="a1_terme">Terme du financement</label><div class="select-wrap"><select id="a1_terme">
+      <option value="24">24 mois (2 ans)</option>
+      <option value="36">36 mois (3 ans)</option>
+      <option value="48">48 mois (4 ans)</option>
+      <option value="60">60 mois (5 ans) ✓</option>
+      <option value="72">72 mois (6 ans)</option>
+      <option value="84">84 mois (7 ans)</option>
+      <option value="96">96 mois (8 ans)</option>
+    </select></div></div>
+      <div class="slider-group"><div class="slider-header"><label for="a1_residuel">Valeur résiduelle à terme <span class="hint">(%)</span></label><span class="slider-value-display" id="a1_residuel_disp">…</span></div><div class="slider-row"><input type="range" id="a1_residuel" min="0" max="80" step="1" value="40" style="--pct:50%" oninput="this.style.setProperty('--pct',(((this.value-0)/(80-0))*100)+'%');document.getElementById('a1_residuel_disp').textContent=Number(this.value).toLocaleString('fr-CA',{minimumFractionDigits:1,maximumFractionDigits:1}) + '\u00a0%';" aria-label="Valeur résiduelle à terme"></div><div class="slider-minmax"><span>0</span><span>80</span></div></div>
       <div class="form-group"><label for="a1_assurance">Assurance mensuelle</label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="a1_assurance" value="150" min="0" step="10"></div></div>
       <div class="form-group"><label for="a1_entretien">Entretien &amp; réparations <span class="hint">($/an)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="a1_entretien" value="1200" min="0" step="100"></div></div>
       <div class="form-group"><label for="a1_immat">Immatriculation <span class="hint">($/an)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="a1_immat" value="300" min="0" step="50"></div></div>
@@ -356,9 +385,15 @@ tr.total-row td { font-weight: 700; color: var(--vert-fonce); border-top: 2px so
       </h2>
       <p class="panel-subtitle">Bail — sans propriété</p>
       <div class="form-group"><label for="l1_mensuel">Paiement mensuel <span class="hint">(avant taxes)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="l1_mensuel" value="450" min="0" step="10"></div></div>
-      <div class="form-group"><label for="l1_terme">Terme du bail <span class="hint">(mois)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">#</span><input type="number" id="l1_terme" value="48" min="12" max="72" step="12"></div></div>
-      <div class="form-group"><label for="l1_km_inclus">Kilométrage inclus/an</label><div class="input-wrap"><span class="prefix" aria-hidden="true">km</span><input type="number" id="l1_km_inclus" value="20000" min="0" step="1000" style="padding-left:38px"></div></div>
-      <div class="form-group"><label for="l1_km_reel">Kilométrage réel prévu/an</label><div class="input-wrap"><span class="prefix" aria-hidden="true">km</span><input type="number" id="l1_km_reel" value="20000" min="0" step="1000" style="padding-left:38px"></div></div>
+      <div class="select-group"><label for="l1_terme">Terme du bail</label><div class="select-wrap"><select id="l1_terme">
+      <option value="24">24 mois (2 ans)</option>
+      <option value="36">36 mois (3 ans)</option>
+      <option value="48">48 mois (4 ans) ✓</option>
+      <option value="60">60 mois (5 ans)</option>
+      <option value="72">72 mois (6 ans)</option>
+    </select></div></div>
+      <div class="slider-group"><div class="slider-header"><label for="l1_km_inclus">Kilométrage inclus / an </label><span class="slider-value-display" id="l1_km_inclus_disp">…</span></div><div class="slider-row"><input type="range" id="l1_km_inclus" min="8000" max="40000" step="1000" value="20000" style="--pct:38%" oninput="this.style.setProperty('--pct',(((this.value-8000)/(40000-8000))*100)+'%');document.getElementById('l1_km_inclus_disp').textContent=Number(this.value).toLocaleString('fr-CA') + '\u00a0km';" aria-label="Kilométrage inclus / an"></div><div class="slider-minmax"><span>8000</span><span>40000</span></div></div>
+      <div class="slider-group"><div class="slider-header"><label for="l1_km_reel">Kilométrage réel prévu / an </label><span class="slider-value-display" id="l1_km_reel_disp">…</span></div><div class="slider-row"><input type="range" id="l1_km_reel" min="8000" max="50000" step="1000" value="20000" style="--pct:29%" oninput="this.style.setProperty('--pct',(((this.value-8000)/(50000-8000))*100)+'%');document.getElementById('l1_km_reel_disp').textContent=Number(this.value).toLocaleString('fr-CA') + '\u00a0km';" aria-label="Kilométrage réel prévu / an"></div><div class="slider-minmax"><span>8000</span><span>50000</span></div></div>
       <div class="form-group"><label for="l1_frais_km">Frais km excédentaire <span class="hint">($/km)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="l1_frais_km" value="0.10" min="0" step="0.01"></div></div>
       <div class="form-group"><label for="l1_mise">Mise de fonds bail <span class="hint">(optionnel)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="l1_mise" value="0" min="0" step="500"></div></div>
       <div class="form-group"><label for="l1_assurance">Assurance mensuelle</label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="l1_assurance" value="175" min="0" step="10"></div></div>
@@ -448,14 +483,14 @@ tr.total-row td { font-weight: 700; color: var(--vert-fonce); border-top: 2px so
         Véhicule Électrique
       </h2>
       <p class="panel-subtitle">VÉ ou hybride rechargeable</p>
-      <div class="form-group"><label for="e_prix">Prix d'achat <span class="hint">(avant taxes)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="e_prix" value="55000" min="0" step="500"></div></div>
+      <div class="slider-group"><div class="slider-header"><label for="e_prix">Prix véhicule électrique <span class="hint">(avant taxes)</span></label><span class="slider-value-display" id="e_prix_disp">…</span></div><div class="slider-row"><input type="range" id="e_prix" min="20000" max="120000" step="500" value="55000" style="--pct:35%" oninput="this.style.setProperty('--pct',(((this.value-20000)/(120000-20000))*100)+'%');document.getElementById('e_prix_disp').textContent='$\u00a0' + Number(this.value).toLocaleString('fr-CA');" aria-label="Prix véhicule électrique"></div><div class="slider-minmax"><span>20000</span><span>120000</span></div></div>
       <div class="form-group">
         <label for="e_rabais">Rabais gouvernementaux <span class="hint">(Roulez Vert + fédéral)</span></label>
         <div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="e_rabais" value="12000" min="0" step="500"></div>
         <div class="form-note">Québec 2025 : jusqu'à 12 000 $ combinés (7 000 $ provincial + 5 000 $ fédéral iZEV). <strong>Les taxes sont calculées sur le prix brut avant rabais, conformément aux règles fiscales QC.</strong></div>
       </div>
-      <div class="form-group"><label for="e_conso">Consommation <span class="hint">(kWh/100 km)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">⚡</span><input type="number" id="e_conso" value="18" min="5" step="0.5"></div></div>
-      <div class="form-group"><label for="e_tarif">Tarif électricité <span class="hint">(¢/kWh)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">¢</span><input type="number" id="e_tarif" value="7.9" min="1" step="0.1"></div><div class="form-note">Hydro-Québec tarif D domestique 2025 : ~7,9 ¢/kWh (source : hydroquebec.com)</div></div>
+      <div class="slider-group"><div class="slider-header"><label for="e_conso">Consommation électrique <span class="hint">(kWh/100 km)</span></label><span class="slider-value-display" id="e_conso_disp">…</span></div><div class="slider-row"><input type="range" id="e_conso" min="10" max="35" step="0.5" value="18" style="--pct:32%" oninput="this.style.setProperty('--pct',(((this.value-10)/(35-10))*100)+'%');document.getElementById('e_conso_disp').textContent=this.value + '\u00a0kWh/100\u00a0km';" aria-label="Consommation électrique"></div><div class="slider-minmax"><span>10</span><span>35</span></div></div>
+      <div class="slider-group"><div class="slider-header"><label for="e_tarif">Tarif électricité <span class="hint">(c/kWh)</span></label><span class="slider-value-display" id="e_tarif_disp">…</span></div><div class="slider-row"><input type="range" id="e_tarif" min="5" max="20" step="0.1" value="7.9" style="--pct:19%" oninput="this.style.setProperty('--pct',(((this.value-5)/(20-5))*100)+'%');document.getElementById('e_tarif_disp').textContent=this.value + '\u00a0c/kWh';" aria-label="Tarif électricité"></div><div class="slider-minmax"><span>5</span><span>20</span></div><div class="form-note">Hydro-Québec : ~7,9 c/kWh (tarif D domestique 2025)</div></div>
       <div class="form-group"><label for="e_entretien">Entretien annuel estimé</label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="e_entretien" value="700" min="0" step="100"></div></div>
       <div class="form-group"><label for="e_assurance">Assurance mensuelle</label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="e_assurance" value="165" min="0" step="10"></div></div>
       <div class="form-group"><label for="e_borne">Installation borne domicile <span class="hint">(une fois)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="e_borne" value="1500" min="0" step="100"></div></div>
@@ -466,10 +501,10 @@ tr.total-row td { font-weight: 700; color: var(--vert-fonce); border-top: 2px so
         Véhicule Essence
       </h2>
       <p class="panel-subtitle">Moteur à combustion</p>
-      <div class="form-group"><label for="g_prix">Prix d'achat <span class="hint">(avant taxes)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="g_prix" value="38000" min="0" step="500"></div></div>
+      <div class="slider-group"><div class="slider-header"><label for="g_prix">Prix véhicule essence <span class="hint">(avant taxes)</span></label><span class="slider-value-display" id="g_prix_disp">…</span></div><div class="slider-row"><input type="range" id="g_prix" min="10000" max="100000" step="500" value="38000" style="--pct:31%" oninput="this.style.setProperty('--pct',(((this.value-10000)/(100000-10000))*100)+'%');document.getElementById('g_prix_disp').textContent='$\u00a0' + Number(this.value).toLocaleString('fr-CA');" aria-label="Prix véhicule essence"></div><div class="slider-minmax"><span>10000</span><span>100000</span></div></div>
       <div class="form-group"><label for="g_rabais">Rabais / incitatif</label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="g_rabais" value="0" min="0" step="500"></div></div>
-      <div class="form-group"><label for="g_conso">Consommation <span class="hint">(L/100 km)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">L</span><input type="number" id="g_conso" value="9.5" min="1" step="0.5"></div></div>
-      <div class="form-group"><label for="g_prix_essence">Prix de l'essence <span class="hint">($/L)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="g_prix_essence" value="1.75" min="0.50" step="0.05"></div></div>
+      <div class="slider-group"><div class="slider-header"><label for="g_conso">Consommation essence <span class="hint">(L/100 km)</span></label><span class="slider-value-display" id="g_conso_disp">…</span></div><div class="slider-row"><input type="range" id="g_conso" min="4" max="20" step="0.5" value="9.5" style="--pct:34%" oninput="this.style.setProperty('--pct',(((this.value-4)/(20-4))*100)+'%');document.getElementById('g_conso_disp').textContent=this.value + '\u00a0L/100\u00a0km';" aria-label="Consommation essence"></div><div class="slider-minmax"><span>4</span><span>20</span></div></div>
+      <div class="slider-group"><div class="slider-header"><label for="g_prix_essence">Prix de l'essence <span class="hint">($/L)</span></label><span class="slider-value-display" id="g_prix_essence_disp">…</span></div><div class="slider-row"><input type="range" id="g_prix_essence" min="1.00" max="2.50" step="0.05" value="1.75" style="--pct:50%" oninput="this.style.setProperty('--pct',(((this.value-1.00)/(2.50-1.00))*100)+'%');document.getElementById('g_prix_essence_disp').textContent='$\u00a0' + Number(this.value).toFixed(2);" aria-label="Prix de l'essence"></div><div class="slider-minmax"><span>1.00</span><span>2.50</span></div></div>
       <div class="form-group"><label for="g_entretien">Entretien annuel estimé</label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="g_entretien" value="1400" min="0" step="100"></div></div>
       <div class="form-group"><label for="g_assurance">Assurance mensuelle</label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="g_assurance" value="150" min="0" step="10"></div></div>
     </div>
@@ -482,9 +517,17 @@ tr.total-row td { font-weight: 700; color: var(--vert-fonce); border-top: 2px so
         Paramètres communs
       </h2>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;">
-        <div class="form-group"><label for="ev_taux">Taux financement <span class="hint">(%)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">%</span><input type="number" id="ev_taux" value="6.99" min="0" step="0.01"></div></div>
-        <div class="form-group"><label for="ev_terme">Terme <span class="hint">(mois)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">#</span><input type="number" id="ev_terme" value="60" min="12" max="96" step="12"></div></div>
-        <div class="form-group"><label for="ev_km">Kilométrage/an</label><div class="input-wrap"><span class="prefix" aria-hidden="true">km</span><input type="number" id="ev_km" value="20000" min="1000" step="1000" style="padding-left:38px"></div></div>
+<div class="slider-group"><div class="slider-header"><label for="ev_taux">Taux de financement <span class="hint">(%)</span></label><span class="slider-value-display" id="ev_taux_disp">…</span></div><div class="slider-row"><input type="range" id="ev_taux" min="0" max="20" step="0.25" value="6.99" style="--pct:35%" oninput="this.style.setProperty('--pct',(((this.value-0)/(20-0))*100)+'%');document.getElementById('ev_taux_disp').textContent=Number(this.value).toLocaleString('fr-CA',{minimumFractionDigits:2,maximumFractionDigits:2}) + '\u00a0%';" aria-label="Taux de financement"></div><div class="slider-minmax"><span>0</span><span>20</span></div></div>
+<div class="select-group"><label for="ev_terme">Terme du financement</label><div class="select-wrap"><select id="ev_terme">
+      <option value="24">24 mois</option>
+      <option value="36">36 mois</option>
+      <option value="48">48 mois</option>
+      <option value="60">60 mois ✓</option>
+      <option value="72">72 mois</option>
+      <option value="84">84 mois</option>
+      <option value="96">96 mois</option>
+    </select></div></div>
+<div class="slider-group"><div class="slider-header"><label for="ev_km">Kilométrage / an </label><span class="slider-value-display" id="ev_km_disp">…</span></div><div class="slider-row"><input type="range" id="ev_km" min="5000" max="50000" step="1000" value="20000" style="--pct:33%" oninput="this.style.setProperty('--pct',(((this.value-5000)/(50000-5000))*100)+'%');document.getElementById('ev_km_disp').textContent=Number(this.value).toLocaleString('fr-CA') + '\u00a0km';" aria-label="Kilométrage / an"></div><div class="slider-minmax"><span>5000</span><span>50000</span></div></div>
       </div>
     </div>
   </div>
@@ -574,11 +617,19 @@ tr.total-row td { font-weight: 700; color: var(--vert-fonce); border-top: 2px so
         Coût du véhicule
       </h2>
       <p class="panel-subtitle">Ce que le véhicule vous coûte réellement</p>
-      <div class="form-group"><label for="vi_prix">Prix du véhicule <span class="hint">(avant taxes)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="vi_prix" value="35000" min="0" step="500"></div></div>
-      <div class="form-group"><label for="vi_mise">Mise de fonds</label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="vi_mise" value="5000" min="0" step="500"></div></div>
-      <div class="form-group"><label for="vi_taux">Taux financement <span class="hint">(%)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">%</span><input type="number" id="vi_taux" value="6.99" min="0" step="0.01"></div></div>
-      <div class="form-group"><label for="vi_terme">Terme <span class="hint">(mois)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">#</span><input type="number" id="vi_terme" value="60" min="12" max="96" step="12"></div></div>
-      <div class="form-group"><label for="vi_residuel">Valeur résiduelle <span class="hint">(%)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">%</span><input type="number" id="vi_residuel" value="40" min="0" max="90" step="1"></div></div>
+<div class="slider-group"><div class="slider-header"><label for="vi_prix">Prix du véhicule <span class="hint">(avant taxes)</span></label><span class="slider-value-display" id="vi_prix_disp">…</span></div><div class="slider-row"><input type="range" id="vi_prix" min="5000" max="150000" step="500" value="35000" style="--pct:21%" oninput="this.style.setProperty('--pct',(((this.value-5000)/(150000-5000))*100)+'%');document.getElementById('vi_prix_disp').textContent='$\u00a0' + Number(this.value).toLocaleString('fr-CA');" aria-label="Prix du véhicule"></div><div class="slider-minmax"><span>5000</span><span>150000</span></div></div>
+<div class="slider-group"><div class="slider-header"><label for="vi_mise">Mise de fonds </label><span class="slider-value-display" id="vi_mise_disp">…</span></div><div class="slider-row"><input type="range" id="vi_mise" min="0" max="50000" step="500" value="5000" style="--pct:10%" oninput="this.style.setProperty('--pct',(((this.value-0)/(50000-0))*100)+'%');document.getElementById('vi_mise_disp').textContent='$\u00a0' + Number(this.value).toLocaleString('fr-CA');" aria-label="Mise de fonds"></div><div class="slider-minmax"><span>0</span><span>50000</span></div></div>
+<div class="slider-group"><div class="slider-header"><label for="vi_taux">Taux de financement <span class="hint">(%)</span></label><span class="slider-value-display" id="vi_taux_disp">…</span></div><div class="slider-row"><input type="range" id="vi_taux" min="0" max="20" step="0.25" value="6.99" style="--pct:35%" oninput="this.style.setProperty('--pct',(((this.value-0)/(20-0))*100)+'%');document.getElementById('vi_taux_disp').textContent=Number(this.value).toLocaleString('fr-CA',{minimumFractionDigits:2,maximumFractionDigits:2}) + '\u00a0%';" aria-label="Taux de financement"></div><div class="slider-minmax"><span>0</span><span>20</span></div></div>
+<div class="select-group"><label for="vi_terme">Terme du financement</label><div class="select-wrap"><select id="vi_terme">
+      <option value="24">24 mois</option>
+      <option value="36">36 mois</option>
+      <option value="48">48 mois</option>
+      <option value="60">60 mois ✓</option>
+      <option value="72">72 mois</option>
+      <option value="84">84 mois</option>
+      <option value="96">96 mois</option>
+    </select></div></div>
+<div class="slider-group"><div class="slider-header"><label for="vi_residuel">Valeur résiduelle à terme <span class="hint">(%)</span></label><span class="slider-value-display" id="vi_residuel_disp">…</span></div><div class="slider-row"><input type="range" id="vi_residuel" min="0" max="80" step="1" value="40" style="--pct:50%" oninput="this.style.setProperty('--pct',(((this.value-0)/(80-0))*100)+'%');document.getElementById('vi_residuel_disp').textContent=Number(this.value).toLocaleString('fr-CA',{minimumFractionDigits:1,maximumFractionDigits:1}) + '\u00a0%';" aria-label="Valeur résiduelle à terme"></div><div class="slider-minmax"><span>0</span><span>80</span></div></div>
       <div class="form-group"><label for="vi_assurance">Assurance mensuelle</label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="vi_assurance" value="150" min="0" step="10"></div></div>
       <div class="form-group"><label for="vi_entretien">Entretien &amp; autres <span class="hint">($/mois)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="vi_entretien" value="130" min="0" step="10"></div></div>
     </div>
@@ -588,18 +639,20 @@ tr.total-row td { font-weight: 700; color: var(--vert-fonce); border-top: 2px so
         Scénario Investissement
       </h2>
       <p class="panel-subtitle">Et si vous investissiez ces sommes ?</p>
-      <div class="form-group"><label for="inv_taux">Rendement annuel espéré <span class="hint">(%)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">%</span><input type="number" id="inv_taux" value="7" min="0" step="0.5"></div><div class="form-note">Référence historique : portefeuille équilibré ~5–7 % / an long terme</div></div>
-      <div class="form-group"><label for="inv_transport">Véhicule minimal nécessaire <span class="hint">($/mois)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">$</span><input type="number" id="inv_transport" value="400" min="0" step="50"></div><div class="form-note">Transport alternatif estimé (voiture usagée, covoiturage, transport en commun, etc.)</div></div>
-      <div class="form-group">
+      <div class="slider-group"><div class="slider-header"><label for="inv_taux">Rendement annuel espéré <span class="hint">(%)</span></label><span class="slider-value-display" id="inv_taux_disp">…</span></div><div class="slider-row"><input type="range" id="inv_taux" min="2" max="15" step="0.5" value="7" style="--pct:38%" oninput="this.style.setProperty('--pct',(((this.value-2)/(15-2))*100)+'%');document.getElementById('inv_taux_disp').textContent=Number(this.value).toLocaleString('fr-CA',{minimumFractionDigits:1,maximumFractionDigits:1}) + '\u00a0%';" aria-label="Rendement annuel espéré"></div><div class="slider-minmax"><span>2</span><span>15</span></div><div class="form-note">Référence historique : portefeuille équilibré ~5-7 % / an long terme</div></div>
+      <div class="slider-group"><div class="slider-header"><label for="inv_transport">Transport alternatif minimal <span class="hint">($/mois)</span></label><span class="slider-value-display" id="inv_transport_disp">…</span></div><div class="slider-row"><input type="range" id="inv_transport" min="0" max="1200" step="50" value="400" style="--pct:33%" oninput="this.style.setProperty('--pct',(((this.value-0)/(1200-0))*100)+'%');document.getElementById('inv_transport_disp').textContent='$\u00a0' + Number(this.value).toLocaleString('fr-CA');" aria-label="Transport alternatif minimal"></div><div class="slider-minmax"><span>0</span><span>1200</span></div><div class="form-note">Covoiturage, transport en commun, voiture usagée, etc.</div></div>
+      <div class="select-group">
         <label for="inv_compte">Type de compte d'investissement</label>
-        <select id="inv_compte" class="no-prefix">
-          <option value="0">CELI — croissance entièrement non imposée</option>
-          <option value="0.27">REER — imposition au retrait (~27 % taux marginal moyen)</option>
-          <option value="0.27">Compte non enregistré — gains en capital (~27 % sur 50 % des gains)</option>
-        </select>
+        <div class="select-wrap">
+          <select id="inv_compte">
+            <option value="0">CELI — croissance entièrement non imposée</option>
+            <option value="0.27_reer">REER — imposition au retrait (~27 % marginal moyen QC)</option>
+            <option value="0.27_nr">Non enregistré — gains en capital (50 % inclusion)</option>
+          </select>
+        </div>
         <div class="form-note" id="inv_compte_note">CELI : aucun impôt sur les gains ou retraits. La valeur projetée est nette à 100 %.</div>
       </div>
-      <div class="form-group"><label for="inv_horizon">Horizon d'analyse <span class="hint">(années)</span></label><div class="input-wrap"><span class="prefix" aria-hidden="true">#</span><input type="number" id="inv_horizon" value="10" min="2" max="30" step="1"></div><div class="form-note">Au-delà du terme du prêt, on continue d'investir la différence de coût de transport.</div></div>
+      <div class="slider-group"><div class="slider-header"><label for="inv_horizon">Horizon d'analyse <span class="hint">(années)</span></label><span class="slider-value-display" id="inv_horizon_disp">…</span></div><div class="slider-row"><input type="range" id="inv_horizon" min="2" max="30" step="1" value="10" style="--pct:29%" oninput="this.style.setProperty('--pct',(((this.value-2)/(30-2))*100)+'%');document.getElementById('inv_horizon_disp').textContent=this.value + (Number(this.value) > 1 ? '\u00a0ans' : '\u00a0an');" aria-label="Horizon d'analyse"></div><div class="slider-minmax"><span>2</span><span>30</span></div><div class="form-note">Au-delà du terme du prêt, on continue d'investir la différence de coût de transport.</div></div>
     </div>
   </div>
 
@@ -1033,7 +1086,7 @@ function calcInvestir() {
   const inv_taux = v('inv_taux'), inv_transport = v('inv_transport');
   const inv_horizon = vi('inv_horizon');
   const sel = document.getElementById('inv_compte');
-  const taxRate = parseFloat(sel.value) || 0;
+  const taxRate = parseFloat(sel.value.replace('_reer','').replace('_nr','')) || 0;
   const isCELI = taxRate === 0;
 
   document.getElementById('r2_horizon_label').textContent = inv_horizon + ' an' + (inv_horizon > 1 ? 's' : '');
@@ -1184,6 +1237,15 @@ function calcInvestir() {
   trackEvent('calculate', { tool_name: 'voiture_investir' });
   setTimeout(() => document.getElementById('res2').scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
 }
+
+// Init slider displays
+document.querySelectorAll('.slider-row input[type="range"]').forEach(function(r){
+  var pct = ((r.value - r.min)/(r.max - r.min)*100).toFixed(1)+'%';
+  r.style.setProperty('--pct', pct);
+  // trigger oninput to set display
+  var evt = new Event('input'); r.dispatchEvent(evt);
+});
+
 </script>
 </body>
 </html>
