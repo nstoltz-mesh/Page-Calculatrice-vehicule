@@ -87,6 +87,7 @@ button { cursor: pointer; font: inherit; }
   background: var(--vert-fonce);
   border-bottom: 1px solid rgba(255,255,255,0.08);
   box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+  overflow: hidden;
 }
 .tabs-inner {
   max-width: 1080px;
@@ -129,7 +130,7 @@ button { cursor: pointer; font: inherit; }
 }
 
 /* ===== MAIN ===== */
-main { max-width: 1080px; margin: 0 auto; padding: 40px 24px 64px; }
+main { max-width: 1080px; margin: 0 auto; padding: 40px 24px 64px; isolation: isolate; position: relative;  }
 
 /* ===== TAB PANELS ===== */
 .tab-panel { display: none; }
