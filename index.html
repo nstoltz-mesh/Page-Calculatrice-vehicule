@@ -543,7 +543,6 @@ function calcAchatLocation() {
   const l_km_inc = v('l1_km_inclus'), l_km_reel = v('l1_km_reel'), l_frais_km = v('l1_frais_km');
   const l_mise = v('l1_mise'), l_ass = v('l1_assurance'), l_frais_fin = v('l1_frais_fin'), l_imm = v('l1_immat');
 
-  // Achat
   const a_ttc = a_prix * (1 + TAXES);
   const a_pmt = pmt(a_ttc - a_mise, a_taux, a_terme);
   const a_fin_total = a_pmt * a_terme + a_mise;
@@ -557,7 +556,6 @@ function calcAchatLocation() {
   const a_km_total = l_km_reel * (a_terme / 12);
   const a_km_c = a_net / (a_km_total || 1);
 
-  // Location
   const l_ttc = l_mens * (1 + TAXES);
   const l_pmt_t = l_ttc * l_terme;
   const l_ass_t = l_ass * l_terme;
@@ -567,7 +565,6 @@ function calcAchatLocation() {
   const l_m = l_ttc + l_ass + (l_imm / 12);
   const l_km_c = l_total / ((l_km_reel * l_terme / 12) || 1);
 
-  // KPIs
   document.getElementById('r0_m_a').textContent = fmtD(a_m);
   document.getElementById('r0_m_l').textContent = fmtD(l_m);
   setWin('r0_m_w', a_m, l_m, true, 'Achat', 'Location');
@@ -586,7 +583,6 @@ function calcAchatLocation() {
   avEl.textContent = a_resid_val > 0 ? '✓ Achat (actif conservé)' : 'Équivalent';
   avEl.className = 'kpi-winner win-a';
 
-  // Insights
   const diff = Math.abs(a_net - l_total);
   const winner = a_net < l_total ? 'achat' : 'location';
   document.getElementById('ins0_1').innerHTML = `L'achat vous laisse un actif estimé à <span class="hl">${fmtD(a_resid_val)}</span> à terme. La location génère <span class="hl-red">0 $</span> d'actif.`;
@@ -595,7 +591,6 @@ function calcAchatLocation() {
     : `Kilométrage dans les limites du bail. Aucun frais excédentaire anticipé.`;
   document.getElementById('ins0_3').innerHTML = `Le scénario <span class="hl">${winner}</span> est moins coûteux de <span class="hl">${fmtD(diff)}</span> sur la période (valeur résiduelle déduite).`;
 
-  // Tableau
   const rows = [
     ['Financement / paiements bail (taxes incl.)', fmtD(a_fin_total), fmtD(l_pmt_t)],
     ['Mise de fonds', fmtD(a_mise), fmtD(l_mise)],
@@ -611,7 +606,6 @@ function calcAchatLocation() {
   tb += `<tr class="total-row"><td>COÛT NET TOTAL</td><td class="val-a">${fmtD(a_net)}</td><td class="val-b">${fmtD(l_total)}</td></tr>`;
   document.getElementById('tb0').innerHTML = tb;
 
-  // Chart
   const maxM = Math.max(a_terme, l_terme);
   const labelsAll = [];
   for (let m = 1; m <= maxM; m++) labelsAll.push(m);
@@ -653,11 +647,9 @@ function calcElectrique() {
   const taux = v('ev_taux'), terme = vi('ev_terme'), km_an = v('ev_km');
   const annees = terme / 12;
 
-  // Coût énergie/an
   const e_energie_an = (e_conso / 100) * km_an * e_tarif;
   const g_energie_an = (g_conso / 100) * km_an * g_essence;
 
-  // Financement
   const e_ttc = (e_prix - e_rabais) * (1 + TAXES);
   const g_ttc = (g_prix - g_rabais) * (1 + TAXES);
   const e_pmt = pmt(e_ttc, taux, terme);
@@ -680,170 +672,6 @@ function calcElectrique() {
 
   const eco = g_total - e_total;
 
-  // KPIs
   document.getElementById('r1_m_a').textContent = fmtD(e_m);
   document.getElementById('r1_m_b').textContent = fmtD(g_m);
-  setWin('r1_m_w', e_m, g_m, true, 'Électrique', 'Essence');
-
-  document.getElementById('r1_t_a').textContent = fmtD(e_total);
-  document.getElementById('r1_t_b').textContent = fmtD(g_total);
-  setWin('r1_t_w', e_total, g_total, true, 'Électrique', 'Essence');
-
-  document.getElementById('r1_e_a').textContent = fmtD(e_energie_t);
-  document.getElementById('r1_e_b').textContent = fmtD(g_energie_t);
-  setWin('r1_e_w', e_energie_t, g_energie_t, true, 'Électrique', 'Essence');
-
-  const ecoEl = document.getElementById('r1_eco');
-  ecoEl.textContent = fmtD(Math.abs(eco));
-  const ecoWEl = document.getElementById('r1_eco_w');
-  if (eco > 0) { ecoWEl.textContent = '✓ Électrique moins coûteux'; ecoWEl.className = 'kpi-winner win-a'; }
-  else if (eco < 0) { ecoWEl.textContent = '✓ Essence moins coûteux'; ecoWEl.className = 'kpi-winner win-b'; }
-  else { ecoWEl.textContent = 'Équivalent'; ecoWEl.className = 'kpi-winner equal'; }
-
-  // Insights
-  const eco_energie = g_energie_t - e_energie_t;
-  const eco_entretien = g_ent_t - e_ent_t;
-  // Point d'équilibre (mois approx)
-  const diff_m = g_m - e_m;
-  const diff_init = (e_ttc - g_ttc) + e_borne;
-  const pb_mois = diff_init > 0 && diff_m > 0 ? Math.ceil(diff_init / diff_m) : null;
-
-  document.getElementById('ins1_1').innerHTML = `Économie d'énergie sur ${fmtN(annees, 0)} an(s) : <span class="hl">${fmtD(eco_energie > 0 ? eco_energie : 0)}</span>. Le VÉ consomme ${fmtN(e_energie_an)} $/an vs ${fmtN(g_energie_an)} $/an pour l'essence.`;
-  document.getElementById('ins1_2').innerHTML = `Entretien réduit estimé : <span class="hl">${fmtD(eco_entretien > 0 ? eco_entretien : 0)}</span> sur le terme. Un VÉ nécessite moins de vidanges d'huile et de pièces d'usure.`;
-  document.getElementById('ins1_3').innerHTML = pb_mois
-    ? `Point d'équilibre estimé : <span class="hl">~${pb_mois} mois</span> pour amortir la différence de prix initial grâce aux économies d'opération.`
-    : `Le VÉ est moins cher dès le départ grâce aux rabais. Il n'y a pas de surcoût initial à récupérer.`;
-
-  // Tableau
-  const rows = [
-    ['Financement (prix net après rabais, taxes incl.)', fmtD(e_fin_t), fmtD(g_fin_t)],
-    ['Énergie (électricité / essence)', fmtD(e_energie_t), fmtD(g_energie_t)],
-    ['Entretien', fmtD(e_ent_t), fmtD(g_ent_t)],
-    ['Assurances', fmtD(e_ass_t), fmtD(g_ass_t)],
-    ['Borne de recharge', fmtD(e_borne), '—'],
-    ['Rabais appliqués', `− ${fmtD(e_rabais)}`, `− ${fmtD(g_rabais)}`],
-  ];
-  let tb = rows.map(r => `<tr><td>${r[0]}</td><td class="val-a">${r[1]}</td><td class="val-b">${r[2]}</td></tr>`).join('');
-  tb += `<tr class="total-row"><td>TOTAL SUR TERME</td><td class="val-a">${fmtD(e_total)}</td><td class="val-b">${fmtD(g_total)}</td></tr>`;
-  document.getElementById('tb1').innerHTML = tb;
-
-  // Chart
-  const labels = [], dE = [], dG = [];
-  let cumE = e_borne, cumG = 0;
-  const step = Math.max(1, Math.floor(terme / 12));
-  for (let m = 1; m <= terme; m++) {
-    cumE += e_pmt + (e_energie_an / 12) + (e_ent / 12) + e_ass;
-    cumG += g_pmt + (g_energie_an / 12) + (g_ent / 12) + g_ass;
-    if (m % step === 0 || m === terme) {
-      labels.push('M' + m);
-      dE.push(+cumE.toFixed(0));
-      dG.push(+cumG.toFixed(0));
-    }
-  }
-
-  buildLineChart('chart1', 1, labels, [
-    { label: 'Électrique — coût cumulé', data: dE, borderColor: '#4e7a51', backgroundColor: 'rgba(78,122,81,0.07)', tension: 0.3, fill: true, pointRadius: 3, borderWidth: 2.5 },
-    { label: 'Essence — coût cumulé', data: dG, borderColor: '#018476', backgroundColor: 'rgba(1,132,118,0.07)', tension: 0.3, fill: true, pointRadius: 3, borderWidth: 2.5 }
-  ]);
-
-  document.getElementById('res1').classList.add('visible');
-  setTimeout(() => document.getElementById('res1').scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
-}
-
-// ===================================
-// CALCULATEUR 3 — VOITURE VS INVESTIR
-// ===================================
-function calcInvestir() {
-  const v = id => parseFloat(document.getElementById(id).value) || 0;
-  const vi = id => parseInt(document.getElementById(id).value) || 0;
-
-  const vi_prix = v('vi_prix'), vi_mise = v('vi_mise'), vi_taux = v('vi_taux');
-  const vi_terme = vi('vi_terme'), vi_resid = v('vi_residuel') / 100;
-  const vi_ass = v('vi_assurance'), vi_ent = v('vi_entretien');
-
-  const inv_taux = v('inv_taux') / 100 / 12;
-  const inv_transport = v('inv_transport');
-  const inv_horizon = vi('inv_horizon');
-  const imp = parseFloat(document.getElementById('inv_compte').value);
-
-  const horizon_mois = inv_horizon * 12;
-
-  // Coût véhicule
-  const vi_ttc = vi_prix * (1 + TAXES);
-  const vi_pmt = pmt(vi_ttc - vi_mise, vi_taux, vi_terme);
-  const vi_m_total = vi_pmt + vi_ass + vi_ent;
-  const vi_resid_val = vi_prix * vi_resid;
-
-  // Montant investissable par mois = coût véhicule - transport minimal
-  const inv_m = Math.max(0, vi_m_total - inv_transport);
-
-  // Valeur future (versements mensuels + mise de fonds investie)
-  let portef = vi_mise;
-  const portef_series = [{ an: 0, portef: vi_mise, cout: vi_mise }];
-  let cout_cumul = vi_mise;
-
-  for (let m = 1; m <= horizon_mois; m++) {
-    portef = portef * (1 + inv_taux) + inv_m;
-    if (m <= vi_terme) cout_cumul += vi_m_total;
-    if (m % 12 === 0) portef_series.push({ an: m / 12, portef: +portef.toFixed(0), cout: +cout_cumul.toFixed(0) });
-  }
-
-  // Après remboursement du prêt, on investit aussi les anciens paiements de remboursement
-  const portef_apres_pret = function() {
-    let p = vi_mise;
-    let cout = vi_mise;
-    const series = [{ an: 0, p, cout }];
-    for (let m = 1; m <= horizon_mois; m++) {
-      const inv_this_m = m <= vi_terme ? inv_m : inv_m + vi_pmt;
-      p = p * (1 + inv_taux) + inv_this_m;
-      if (m <= vi_terme) cout += vi_m_total;
-      if (m % 12 === 0) series.push({ an: m / 12, p: +p.toFixed(0), cout: +cout.toFixed(0) });
-    }
-    return { finalVal: p, series };
-  }();
-
-  const val_finale = portef_apres_pret.finalVal * (1 - imp);
-  const interets = val_finale - (inv_m * horizon_mois + vi_mise);
-  const cout_total_v = vi_pmt * vi_terme + vi_mise + (vi_ass + vi_ent) * vi_terme - vi_resid_val;
-  const opp_cost = val_finale - vi_resid_val;
-
-  // KPIs
-  document.getElementById('r2_horizon_label').textContent = inv_horizon + ' an' + (inv_horizon > 1 ? 's' : '');
-  document.getElementById('r2_cout_v').textContent = fmtD(cout_total_v);
-  document.getElementById('r2_inv').textContent = fmtD(val_finale);
-  document.getElementById('r2_opp').textContent = fmtD(Math.max(0, opp_cost));
-  document.getElementById('r2_int').textContent = fmtD(Math.max(0, interets));
-
-  const oppEl = document.getElementById('r2_opp_w');
-  oppEl.textContent = opp_cost > 0 ? '💡 Manque à gagner potentiel' : 'Coût d\'opportunité faible';
-  oppEl.className = 'kpi-winner ' + (opp_cost > 20000 ? 'win-b' : 'equal');
-
-  // Insights
-  document.getElementById('ins2_1').innerHTML = `En investissant <span class="hl">${fmtD(inv_m)}/mois</span> pendant ${inv_horizon} ans au lieu du surcoût véhicule, vous pourriez accumuler <span class="hl">${fmtD(val_finale)}</span> grâce aux intérêts composés.`;
-  document.getElementById('ins2_2').innerHTML = `Le coût réel mensuel de votre véhicule est <span class="hl-red">${fmtD(vi_m_total)}</span> (paiement + assurance + entretien). Votre transport minimal alternatif serait <span class="hl">${fmtD(inv_transport)}</span>/mois.`;
-  document.getElementById('ins2_3').innerHTML = `Cela ne signifie pas qu'il ne faut pas de voiture. Mais comprendre ce coût d'opportunité de <span class="hl">${fmtD(Math.max(0,opp_cost))}</span> aide à faire un choix conscient et aligné avec vos objectifs.`;
-
-  // Tableau annuel
-  const series = portef_apres_pret.series;
-  let tb = series.filter(r => r.an > 0).map(r => {
-    const ecart = r.p - r.cout;
-    return `<tr><td>${r.an} an${r.an > 1 ? 's' : ''}</td><td class="val-b">${fmtD(r.p)}</td><td class="val-a">${fmtD(r.cout)}</td><td class="${ecart >= 0 ? 'val-b' : 'val-a'}">${ecart >= 0 ? '+' : ''}${fmtD(ecart)}</td></tr>`;
-  }).join('');
-  document.getElementById('tb2').innerHTML = tb;
-
-  // Chart
-  const chartLabels = series.map(r => r.an === 0 ? 'Départ' : r.an + ' ans');
-  const dPortef = series.map(r => r.p);
-  const dCout = series.map(r => r.cout);
-
-  buildLineChart('chart2', 2, chartLabels, [
-    { label: 'Valeur du portefeuille', data: dPortef, borderColor: '#018476', backgroundColor: 'rgba(1,132,118,0.08)', tension: 0.4, fill: true, pointRadius: 3, borderWidth: 2.5 },
-    { label: 'Coût cumulé véhicule', data: dCout, borderColor: '#4e7a51', backgroundColor: 'rgba(78,122,81,0.06)', tension: 0.4, fill: true, pointRadius: 3, borderWidth: 2, borderDash: [6,3] }
-  ]);
-
-  document.getElementById('res2').classList.add('visible');
-  setTimeout(() => document.getElementById('res2').scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
-}
-</script>
-</body>
-</html>
+  setWin('r1_m_w', e_m, g_m, ', e_m, g_m, 
