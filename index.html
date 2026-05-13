@@ -1019,6 +1019,8 @@ function calcElectrique() {
 }
 
 // ===================================
+
+// ===================================
 // CALCULATEUR 3 — VOITURE VS INVESTIR
 // ===================================
 function calcInvestir() {
@@ -1031,7 +1033,157 @@ function calcInvestir() {
   const inv_taux = v('inv_taux'), inv_transport = v('inv_transport');
   const inv_horizon = vi('inv_horizon');
   const sel = document.getElementById('inv_compte');
-  const taxRate = parseFloat(sel.value) || 0; // 0 pour CELI
+  const taxRate = parseFloat(sel.value) || 0;
   const isCELI = taxRate === 0;
 
-  document.getElementById('r2_horizon_label').textContent = inv_horizon + ' an
+  document.getElementById('r2_horizon_label').textContent = inv_horizon + ' an' + (inv_horizon > 1 ? 's' : '');
+
+  // --- Coûts véhicule ---
+  const vi_ttc = vi_prix * (1 + TAXES);
+  const vi_pmt = pmt(vi_ttc - vi_mise, vi_taux, vi_terme);
+  const vi_cout_m = vi_pmt + vi_ass + vi_ent;
+  const vi_resid_val = vi_prix * vi_resid;
+
+  // Coût total véhicule sur l'horizon complet (mois)
+  const horizonM = inv_horizon * 12;
+  let coutVehicule = vi_mise; // mise initiale
+  for (let m = 1; m <= horizonM; m++) {
+    if (m <= vi_terme) {
+      coutVehicule += vi_pmt + vi_ass + vi_ent;
+    } else {
+      // après remboursement : transport alternatif + assurance/entretien réduits
+      coutVehicule += inv_transport;
+    }
+  }
+  // déduire valeur résiduelle si dans horizon
+  if (vi_terme <= horizonM) coutVehicule -= vi_resid_val;
+
+  // --- Scénario investissement ---
+  // On investit : mise de fonds initiale + différence mensuelle (vi_cout_m - inv_transport)
+  const r_mensuel = inv_taux / 100 / 12;
+  let portefeuille = vi_mise; // placement initial = mise de fonds
+  let totalInvesti = vi_mise;
+  const cotisation_m_pendant = vi_pmt + vi_ass + vi_ent - inv_transport; // ce qu'on économise/mois pendant le prêt
+  const cotisation_m_apres = vi_ass + vi_ent; // économie supplémentaire après remboursement (déjà en transport)
+
+  for (let m = 1; m <= horizonM; m++) {
+    const cotis = m <= vi_terme ? cotisation_m_pendant : cotisation_m_apres;
+    const montantPos = Math.max(0, cotis);
+    portefeuille = portefeuille * (1 + r_mensuel) + montantPos;
+    totalInvesti += montantPos;
+  }
+
+  // Impôt sur les gains
+  const gains = portefeuille - totalInvesti;
+  let impot = 0;
+  if (!isCELI && gains > 0) {
+    // REER : impôt sur valeur totale au retrait
+    if (taxRate > 0 && sel.selectedIndex === 1) {
+      impot = portefeuille * taxRate;
+    } else {
+      // Non enregistré : gains en capital 50% inclusion
+      impot = gains * 0.5 * taxRate;
+    }
+  }
+  const portefeuilleNet = portefeuille - impot;
+  const coutOpportunite = portefeuilleNet - (coutVehicule > 0 ? 0 : 0); // manque à gagner vs investir
+
+  // Affichage KPI
+  document.getElementById('r2_cout_v').textContent = fmtD(coutVehicule);
+  document.getElementById('r2_inv').textContent = fmtD(portefeuilleNet);
+  document.getElementById('r2_opp').textContent = fmtD(Math.max(0, portefeuilleNet));
+  document.getElementById('r2_int').textContent = fmtD(Math.max(0, gains - impot));
+
+  const oppEl = document.getElementById('r2_opp_w');
+  oppEl.textContent = portefeuilleNet > coutVehicule ? '↑ L\'investissement prend l\'avance' : 'Le véhicule reste l\'option choisie';
+  oppEl.className = 'kpi-winner ' + (portefeuilleNet > coutVehicule ? 'win-b' : 'equal');
+
+  // Verdict
+  const diff2 = Math.abs(portefeuilleNet - coutVehicule);
+  const compteLabel = isCELI ? 'CELI' : sel.selectedIndex === 1 ? 'REER' : 'compte non enregistré';
+  document.getElementById('verdict2_text').innerHTML =
+    `En investissant les sommes consacrées au véhicule dans un <strong>${compteLabel}</strong>, ` +
+    `vous auriez accumulé <strong>${fmtD(portefeuilleNet)}</strong> sur ${inv_horizon} ans (nets d'impôt). ` +
+    `Le coût réel du véhicule sur cette période est estimé à <strong>${fmtD(coutVehicule)}</strong>. ` +
+    (portefeuilleNet > coutVehicule
+      ? `<br><em>Le coût d'opportunité réel est de <strong>${fmtD(portefeuilleNet)}</strong> — l'argent aurait travaillé pour vous.</em>`
+      : `<br><em>Le transport reste nécessaire, mais réduire le coût du véhicule libère du capital à investir.</em>`);
+
+  // Insights
+  const cout_m_reel = coutVehicule / (horizonM || 1);
+  document.getElementById('ins2_1').innerHTML =
+    `Avec un rendement de <span class="hl">${inv_taux} %/an</span>, chaque dollar investi double approximativement en <span class="hl">${(72 / (inv_taux || 1)).toFixed(1)} ans</span> (règle de 72).`;
+  document.getElementById('ins2_2').innerHTML =
+    `Votre véhicule vous coûte en moyenne <span class="hl-red">${fmtD(cout_m_reel)}/mois</span> sur l'horizon complet de ${inv_horizon} ans, valeur résiduelle déduite.`;
+  document.getElementById('ins2_3').innerHTML =
+    isCELI
+      ? `Dans un <span class="hl">CELI</span>, la totalité de la croissance est non imposée. C'est le véhicule d'épargne le plus efficace au Canada pour ce type d'analyse.`
+      : `Dans un <span class="hl">${compteLabel}</span>, l'impôt estimé au retrait est de <span class="hl-red">${fmtD(impot)}</span>. Le CELI éliminerait cette friction fiscale.`;
+
+  // Tableau annuel
+  let tb2 = '';
+  let portAn = vi_mise;
+  let coutAn = vi_mise;
+  let totalInvAn = vi_mise;
+  for (let an = 1; an <= inv_horizon; an++) {
+    for (let m = 1; m <= 12; m++) {
+      const moisGlobal = (an - 1) * 12 + m;
+      const cotis = moisGlobal <= vi_terme ? Math.max(0, cotisation_m_pendant) : Math.max(0, cotisation_m_apres);
+      portAn = portAn * (1 + r_mensuel) + cotis;
+      totalInvAn += cotis;
+      if (moisGlobal <= vi_terme) {
+        coutAn += vi_pmt + vi_ass + vi_ent;
+      } else {
+        coutAn += inv_transport;
+      }
+    }
+    if (an * 12 >= vi_terme && an * 12 - 12 < vi_terme) coutAn -= vi_resid_val;
+    const gainsAn = portAn - totalInvAn;
+    let impotAn = 0;
+    if (!isCELI && gainsAn > 0) {
+      impotAn = sel.selectedIndex === 1 ? portAn * taxRate : gainsAn * 0.5 * taxRate;
+    }
+    const portNetAn = portAn - impotAn;
+    const ecart = portNetAn - coutAn;
+    tb2 += `<tr>
+      <td>${an}</td>
+      <td class="val-b">${fmtD(portNetAn)}</td>
+      <td class="val-a">${fmtD(coutAn)}</td>
+      <td class="${ecart >= 0 ? 'val-b' : 'val-a'}">${ecart >= 0 ? '+' : ''}${fmtD(ecart)}</td>
+    </tr>`;
+  }
+  document.getElementById('tb2').innerHTML = tb2;
+
+  // Graphique
+  const labelsAn = [];
+  const dPort = [], dCout = [];
+  let portG = vi_mise, coutG = vi_mise, invG = vi_mise;
+  for (let an = 1; an <= inv_horizon; an++) {
+    for (let m = 1; m <= 12; m++) {
+      const mg = (an - 1) * 12 + m;
+      const cotis = mg <= vi_terme ? Math.max(0, cotisation_m_pendant) : Math.max(0, cotisation_m_apres);
+      portG = portG * (1 + r_mensuel) + cotis;
+      invG += cotis;
+      coutG += mg <= vi_terme ? vi_pmt + vi_ass + vi_ent : inv_transport;
+    }
+    if (an * 12 >= vi_terme && an * 12 - 12 < vi_terme) coutG -= vi_resid_val;
+    const gainsG = portG - invG;
+    let impotG = 0;
+    if (!isCELI && gainsG > 0) impotG = sel.selectedIndex === 1 ? portG * taxRate : gainsG * 0.5 * taxRate;
+    labelsAn.push('An ' + an);
+    dPort.push(+(portG - impotG).toFixed(0));
+    dCout.push(+coutG.toFixed(0));
+  }
+
+  buildLineChart('chart2', 2, labelsAn, [
+    { label: 'Portefeuille investi (net)', data: dPort, borderColor: '#018476', backgroundColor: 'rgba(1,132,118,0.08)', tension: 0.35, fill: true, pointRadius: 3, borderWidth: 2.5 },
+    { label: 'Coût cumulé véhicule', data: dCout, borderColor: '#4e7a51', backgroundColor: 'rgba(78,122,81,0.07)', tension: 0.35, fill: true, pointRadius: 3, borderWidth: 2.5 }
+  ]);
+
+  document.getElementById('res2').classList.add('visible');
+  trackEvent('calculate', { tool_name: 'voiture_investir' });
+  setTimeout(() => document.getElementById('res2').scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+}
+</script>
+</body>
+</html>
