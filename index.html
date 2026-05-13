@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Achat ou location de véhicule — Calculateur éducatif | Nicolas Stoltz</title>
-<meta name="description" content="Comparez le coût total réel d'un achat versus la location d'un véhicule au Québec. Outil éducatif gratuit — Nicolas Stoltz, conseiller en sécurité financière.">
+<title>Calculateurs Véhicule — Comparer vos options | Nicolas Stoltz</title>
+<meta name="description" content="3 calculateurs éducatifs gratuits : Achat vs Location, Électrique vs Essence, Voiture vs Investir. Prenez de meilleures décisions sur votre prochain véhicule — Nicolas Stoltz, conseiller financier Québec.">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <style>
@@ -26,135 +26,185 @@ body { font-family: 'Inter', sans-serif; background: var(--gris-clair); color: v
 /* ===== HERO ===== */
 .hero {
   background: linear-gradient(135deg, var(--vert-fonce) 0%, var(--teal) 100%);
-  padding: 64px 32px 52px;
+  padding: 60px 32px 48px;
   text-align: center;
 }
-.hero-content { max-width: 740px; margin: 0 auto; }
-.hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.7rem, 4vw, 2.5rem); font-weight: 700; color: var(--blanc); line-height: 1.2; margin-bottom: 14px; }
-.hero p { font-size: 1rem; color: var(--bleu-clair); margin-bottom: 28px; line-height: 1.75; }
-.hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-.btn { display: inline-block; padding: 12px 26px; border-radius: 10px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.3s ease; cursor: pointer; border: none; }
-.btn-primary { background: var(--bleu-clair); color: var(--vert-fonce); }
-.btn-primary:hover { background: var(--blanc); transform: translateY(-2px); }
-.btn-secondary { background: rgba(255,255,255,0.12); color: var(--blanc); border: 1px solid rgba(255,255,255,0.3); }
-.btn-secondary:hover { background: rgba(255,255,255,0.2); }
+.hero-content { max-width: 720px; margin: 0 auto; }
+.hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.7rem, 4vw, 2.5rem); font-weight: 700; color: var(--blanc); line-height: 1.2; margin-bottom: 12px; }
+.hero p { font-size: 0.97rem; color: var(--bleu-clair); line-height: 1.75; }
 
-/* ===== LAYOUT ===== */
-main { max-width: 1080px; margin: 0 auto; padding: 48px 24px 64px; }
+/* ===== TABS STICKY ===== */
+.tabs-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--vert-fonce);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+}
+.tabs-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  position: relative;
+  padding: 0 24px;
+}
+.tab-btn {
+  flex: 1;
+  padding: 16px 12px;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.78rem, 1.5vw, 0.9rem);
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  position: relative;
+}
+.tab-btn:hover { color: rgba(255,255,255,0.8); }
+.tab-btn.active { color: var(--blanc); }
+.tab-btn i { font-size: 0.9rem; }
+.tab-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 3px;
+  background: var(--bleu-clair);
+  border-radius: 3px 3px 0 0;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== MAIN ===== */
+main { max-width: 1080px; margin: 0 auto; padding: 40px 24px 64px; }
+
+/* ===== TAB PANELS ===== */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
 
 /* ===== DISCLAIMER ===== */
-.disclaimer { background: var(--bleu-pale); border-left: 4px solid var(--teal); border-radius: 10px; padding: 16px 20px; margin-bottom: 40px; }
-.disclaimer p { font-size: 0.8rem; color: #555; line-height: 1.65; }
+.disclaimer { background: var(--bleu-pale); border-left: 4px solid var(--teal); border-radius: 10px; padding: 14px 18px; margin-bottom: 32px; }
+.disclaimer p { font-size: 0.79rem; color: #555; line-height: 1.6; }
 
-/* ===== FORM SECTION ===== */
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 36px; }
-.form-panel { background: var(--blanc); border-radius: 16px; padding: 32px; box-shadow: 0 2px 12px rgba(0,34,28,0.07); }
-.form-panel.achat { border-top: 4px solid var(--vert-logo); }
-.form-panel.location { border-top: 4px solid var(--teal); }
-.panel-title { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 600; color: var(--vert-fonce); margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
-.panel-title i { font-size: 1rem; }
-.panel-subtitle { font-size: 0.8rem; color: #888; margin-bottom: 24px; }
+/* ===== FORM GRID ===== */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 32px; }
+.form-panel { background: var(--blanc); border-radius: 16px; padding: 28px; box-shadow: 0 2px 12px rgba(0,34,28,0.07); }
+.form-panel.col-a { border-top: 4px solid var(--vert-logo); }
+.form-panel.col-b { border-top: 4px solid var(--teal); }
+.form-panel.col-c { border-top: 4px solid #e6a817; }
+.panel-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 600; color: var(--vert-fonce); margin-bottom: 4px; display: flex; align-items: center; gap: 9px; }
+.panel-subtitle { font-size: 0.78rem; color: #999; margin-bottom: 22px; }
 
-.form-group { margin-bottom: 18px; }
-.form-group label { display: block; font-size: 0.83rem; font-weight: 600; color: var(--vert-fonce); margin-bottom: 6px; }
-.form-group .hint { font-size: 0.75rem; color: #999; font-weight: 400; margin-left: 4px; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 0.81rem; font-weight: 600; color: var(--vert-fonce); margin-bottom: 5px; }
+.form-group .hint { font-size: 0.73rem; color: #bbb; font-weight: 400; margin-left: 3px; }
 .input-wrap { position: relative; }
-.input-wrap .prefix { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 0.88rem; color: #aaa; pointer-events: none; }
-.input-wrap .suffix { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 0.88rem; color: #aaa; pointer-events: none; }
-input[type="number"], input[type="text"] {
-  width: 100%; padding: 10px 14px; border: 1.5px solid #ddd; border-radius: 8px;
-  font-family: 'Inter', sans-serif; font-size: 0.92rem; color: var(--texte);
+.input-wrap .prefix { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 0.85rem; color: #bbb; pointer-events: none; }
+input[type="number"] {
+  width: 100%; padding: 9px 12px 9px 26px; border: 1.5px solid #e0e0e0; border-radius: 8px;
+  font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--texte);
   transition: border-color 0.2s ease; background: var(--blanc);
   -moz-appearance: textfield;
 }
 input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-input[type="number"]:focus, input[type="text"]:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(1,132,118,0.12); }
-.input-wrap input { padding-left: 28px; }
-.input-wrap.suffix-input input { padding-right: 40px; }
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+input[type="number"]:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(1,132,118,0.1); }
+input.no-prefix { padding-left: 12px; }
 
-.btn-calc { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--vert-fonce), var(--teal)); color: var(--blanc); border: none; border-radius: 12px; font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-bottom: 12px; letter-spacing: 0.02em; }
-.btn-calc:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,34,28,0.18); }
-.btn-reset { width: 100%; padding: 10px; background: transparent; color: #aaa; border: 1px solid #ddd; border-radius: 10px; font-size: 0.82rem; cursor: pointer; transition: all 0.2s ease; }
+.form-note { font-size: 0.75rem; color: #aaa; background: var(--gris-clair); border-radius: 8px; padding: 10px 12px; margin-top: 4px; line-height: 1.5; }
+
+/* ===== BOUTONS ===== */
+.calc-actions { max-width: 460px; margin: 0 auto 48px; }
+.btn-calc { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--vert-fonce), var(--teal)); color: var(--blanc); border: none; border-radius: 12px; font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-bottom: 10px; }
+.btn-calc:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,34,28,0.18); }
+.btn-reset { width: 100%; padding: 9px; background: transparent; color: #bbb; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s ease; }
 .btn-reset:hover { color: #888; border-color: #bbb; }
 
-/* ===== RESULTS ===== */
-#results { display: none; }
-#results.visible { display: block; }
+/* ===== RÉSULTATS ===== */
+.results-block { display: none; }
+.results-block.visible { display: block; }
 
-.results-header { text-align: center; margin-bottom: 36px; }
-.results-header h2 { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--vert-fonce); margin-bottom: 8px; }
-.results-header p { color: #777; font-size: 0.9rem; }
+.results-header { text-align: center; margin-bottom: 28px; }
+.results-header h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--vert-fonce); margin-bottom: 6px; }
+.results-header p { color: #888; font-size: 0.86rem; }
 
-/* KPI Cards */
-.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
-.kpi-card { background: var(--blanc); border-radius: 14px; padding: 22px 18px; box-shadow: 0 2px 10px rgba(0,34,28,0.07); text-align: center; }
-.kpi-label { font-size: 0.73rem; color: #999; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; }
-.kpi-values { display: flex; justify-content: center; gap: 16px; margin-bottom: 8px; }
+/* KPI */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+.kpi-card { background: var(--blanc); border-radius: 13px; padding: 18px 14px; box-shadow: 0 2px 10px rgba(0,34,28,0.07); text-align: center; }
+.kpi-label { font-size: 0.7rem; color: #bbb; text-transform: uppercase; letter-spacing: 1.1px; margin-bottom: 9px; }
+.kpi-values { display: flex; justify-content: center; gap: 14px; margin-bottom: 7px; }
 .kpi-val { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.kpi-tag { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-.kpi-tag.achat { color: var(--vert-logo); }
-.kpi-tag.location { color: var(--teal); }
-.kpi-num { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: var(--vert-fonce); }
-.kpi-winner { font-size: 0.72rem; font-weight: 600; padding: 3px 9px; border-radius: 99px; margin-top: 4px; }
-.kpi-winner.achat-win { background: rgba(78,122,81,0.12); color: var(--vert-logo); }
-.kpi-winner.location-win { background: rgba(1,132,118,0.12); color: var(--teal); }
-.kpi-winner.equal { background: #f0f0f0; color: #888; }
+.kpi-tag { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; }
+.kpi-tag.col-a { color: var(--vert-logo); }
+.kpi-tag.col-b { color: var(--teal); }
+.kpi-tag.col-c { color: #e6a817; }
+.kpi-num { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--vert-fonce); }
+.kpi-winner { font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 99px; }
+.kpi-winner.win-a { background: rgba(78,122,81,0.1); color: var(--vert-logo); }
+.kpi-winner.win-b { background: rgba(1,132,118,0.1); color: var(--teal); }
+.kpi-winner.win-c { background: rgba(230,168,23,0.1); color: #b07800; }
+.kpi-winner.equal { background: #f0f0f0; color: #aaa; }
 
 /* Chart */
-.chart-panel { background: var(--blanc); border-radius: 16px; padding: 32px; box-shadow: 0 2px 12px rgba(0,34,28,0.07); margin-bottom: 28px; border-top: 4px solid var(--vert-logo); }
-.chart-panel h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--vert-fonce); margin-bottom: 6px; }
-.chart-panel .chart-desc { font-size: 0.82rem; color: #888; margin-bottom: 24px; }
-.chart-wrap { position: relative; height: 320px; }
+.chart-panel { background: var(--blanc); border-radius: 16px; padding: 28px; box-shadow: 0 2px 12px rgba(0,34,28,0.07); margin-bottom: 22px; border-top: 4px solid var(--vert-logo); }
+.chart-panel h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--vert-fonce); margin-bottom: 5px; }
+.chart-desc { font-size: 0.79rem; color: #aaa; margin-bottom: 20px; }
+.chart-wrap { position: relative; height: 300px; }
 
 /* Insights */
-.insights-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
-.insight-card { background: var(--blanc); border-radius: 14px; padding: 22px 20px; box-shadow: 0 2px 10px rgba(0,34,28,0.07); }
-.insight-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--gris-clair); display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--teal); margin-bottom: 12px; }
-.insight-card h4 { font-size: 0.85rem; font-weight: 700; color: var(--vert-fonce); margin-bottom: 6px; }
-.insight-card p { font-size: 0.82rem; color: #666; line-height: 1.6; }
-.insight-card .highlight { color: var(--teal); font-weight: 700; }
-.insight-card .highlight.neg { color: #c0392b; }
+.insights-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+.insight-card { background: var(--blanc); border-radius: 13px; padding: 20px 18px; box-shadow: 0 2px 10px rgba(0,34,28,0.07); }
+.insight-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--gris-clair); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; color: var(--teal); margin-bottom: 10px; }
+.insight-card h4 { font-size: 0.82rem; font-weight: 700; color: var(--vert-fonce); margin-bottom: 5px; }
+.insight-card p { font-size: 0.8rem; color: #666; line-height: 1.6; }
+.hl { color: var(--teal); font-weight: 700; }
+.hl-red { color: #c0392b; font-weight: 700; }
+.hl-gold { color: #b07800; font-weight: 700; }
 
-/* Breakdown table */
-.breakdown-panel { background: var(--blanc); border-radius: 16px; padding: 32px; box-shadow: 0 2px 12px rgba(0,34,28,0.07); margin-bottom: 28px; border-top: 4px solid var(--teal); }
-.breakdown-panel h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--vert-fonce); margin-bottom: 20px; }
-.breakdown-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-.breakdown-table th { text-align: left; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: #aaa; padding: 0 12px 10px; }
-.breakdown-table th:not(:first-child) { text-align: right; }
-.breakdown-table td { padding: 10px 12px; border-top: 1px solid #f0f0f0; color: #555; }
-.breakdown-table td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
-.breakdown-table tr.total-row td { font-weight: 700; color: var(--vert-fonce); border-top: 2px solid #e0e0e0; font-size: 0.9rem; }
-.breakdown-table .achat-val { color: var(--vert-logo); }
-.breakdown-table .location-val { color: var(--teal); }
-.breakdown-table .winner-cell { font-weight: 700; }
+/* Breakdown */
+.breakdown-panel { background: var(--blanc); border-radius: 16px; padding: 28px; box-shadow: 0 2px 12px rgba(0,34,28,0.07); margin-bottom: 24px; border-top: 4px solid var(--teal); }
+.breakdown-panel h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--vert-fonce); margin-bottom: 18px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+thead th { text-align: left; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #ccc; padding: 0 10px 9px; }
+thead th:not(:first-child) { text-align: right; }
+tbody td { padding: 9px 10px; border-top: 1px solid #f2f2f2; color: #555; }
+tbody td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+tr.total-row td { font-weight: 700; color: var(--vert-fonce); border-top: 2px solid #e8e8e8; font-size: 0.88rem; }
+.val-a { color: var(--vert-logo); }
+.val-b { color: var(--teal); }
+.val-c { color: #b07800; }
 
-/* CTA Bottom */
-.cta-section { background: linear-gradient(135deg, var(--vert-fonce) 0%, var(--teal) 100%); border-radius: 16px; padding: 48px 40px; text-align: center; }
-.cta-section h2 { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--blanc); margin-bottom: 12px; }
-.cta-section p { color: var(--bleu-clair); font-size: 0.95rem; margin-bottom: 28px; max-width: 500px; margin-left: auto; margin-right: auto; }
+/* CTA */
+.cta-section { background: linear-gradient(135deg, var(--vert-fonce) 0%, var(--teal) 100%); border-radius: 16px; padding: 44px 36px; text-align: center; margin-top: 8px; }
+.cta-section h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--blanc); margin-bottom: 10px; }
+.cta-section p { color: var(--bleu-clair); font-size: 0.92rem; margin-bottom: 24px; max-width: 480px; margin-left: auto; margin-right: auto; }
+.btn { display: inline-block; padding: 12px 26px; border-radius: 10px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.88rem; text-decoration: none; transition: all 0.3s ease; cursor: pointer; border: none; }
+.btn-primary { background: var(--bleu-clair); color: var(--vert-fonce); }
+.btn-primary:hover { background: var(--blanc); transform: translateY(-2px); }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
   .form-grid { grid-template-columns: 1fr; }
   .kpi-grid { grid-template-columns: repeat(2, 1fr); }
   .insights-grid { grid-template-columns: 1fr 1fr; }
+  .tab-btn span.tab-label { display: none; }
+  .tab-btn { padding: 14px 8px; font-size: 0.85rem; }
 }
 @media (max-width: 600px) {
-  .hero { padding: 48px 20px 40px; }
-  main { padding: 32px 16px 48px; }
+  main { padding: 28px 16px 48px; }
   .kpi-grid { grid-template-columns: 1fr 1fr; }
   .insights-grid { grid-template-columns: 1fr; }
-  .kpi-values { gap: 10px; }
-  .cta-section { padding: 36px 20px; }
-  .chart-wrap { height: 240px; }
-  .breakdown-table { font-size: 0.78rem; }
+  .chart-wrap { height: 230px; }
+  .cta-section { padding: 32px 20px; }
+  table { font-size: 0.75rem; }
 }
 
-/* ===== ANIMATIONS ===== */
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
-.fade-in { animation: fadeInUp 0.65s ease-out both; }
-.fade-in-delay { animation: fadeInUp 0.65s ease-out 0.15s both; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeInUp 0.6s ease-out both; }
 </style>
 </head>
 <body>
@@ -162,544 +212,638 @@ input[type="number"]:focus, input[type="text"]:focus { outline: none; border-col
 <!-- ===== HERO ===== -->
 <section class="hero">
   <div class="hero-content fade-in">
-    <h1>Achat ou location de véhicule ?</h1>
-    <p>Découvrez le coût total réel de chaque option selon votre situation. Cet outil éducatif vous aide à comparer objectivement les deux scénarios avant de prendre une décision.</p>
-    <div class="hero-cta">
-      <a href="#calculateur" class="btn btn-primary">Commencer le calcul</a>
-      <a href="https://api.leadconnectorhq.com/widget/booking/Ji600NehzD0aMO3Dl5A5" class="btn btn-secondary" target="_blank">Parler à Nicolas</a>
-    </div>
+    <h1>Comparez vos options véhicule</h1>
+    <p>Trois calculateurs éducatifs pour prendre une décision éclairée — coûts réels, taxes incluses, adapté au Québec.</p>
   </div>
 </section>
 
+<!-- ===== TABS STICKY ===== -->
+<div class="tabs-wrapper">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab(0)" id="tab0">
+      <i class="fas fa-balance-scale"></i>
+      <span class="tab-label">Achat vs Location</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab(1)" id="tab1">
+      <i class="fas fa-bolt"></i>
+      <span class="tab-label">Électrique vs Essence</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab(2)" id="tab2">
+      <i class="fas fa-chart-line"></i>
+      <span class="tab-label">Voiture vs Investir</span>
+    </button>
+    <div class="tab-indicator" id="tabIndicator"></div>
+  </div>
+</div>
+
 <main>
 
-  <!-- ===== DISCLAIMER ===== -->
-  <div class="disclaimer">
-    <p><strong>Outil éducatif :</strong> Les résultats sont des estimations basées sur vos données et ne constituent pas des conseils financiers personnalisés. Plusieurs facteurs (condition du marché, kilométrage réel, entretien imprévu, fiscalité) peuvent influencer les résultats réels. Consultez un conseiller avant toute décision.</p>
+<!-- ========================================
+     TAB 1 — ACHAT VS LOCATION
+     ======================================== -->
+<div class="tab-panel active" id="panel0">
+
+  <div class="disclaimer" style="margin-top:8px;">
+    <p><strong>Outil éducatif :</strong> Estimations basées sur vos données. TPS + TVQ (14,975 %) incluses automatiquement. Ne constitue pas un conseil financier personnalisé.</p>
   </div>
 
-  <!-- ===== FORMULAIRE ===== -->
-  <div id="calculateur" class="form-grid">
-
-    <!-- ACHAT -->
-    <div class="form-panel achat fade-in">
+  <div class="form-grid">
+    <div class="form-panel col-a">
       <div class="panel-title"><i class="fas fa-car" style="color:var(--vert-logo)"></i> Scénario Achat</div>
-      <p class="panel-subtitle">Financement ou comptant — coût de possession</p>
-
-      <div class="form-group">
-        <label>Prix du véhicule <span class="hint">(avant taxes)</span></label>
-        <div class="input-wrap">
-          <span class="prefix">$</span>
-          <input type="number" id="a_prix" value="35000" min="0" step="500">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Mise de fonds</label>
-        <div class="input-wrap">
-          <span class="prefix">$</span>
-          <input type="number" id="a_mise" value="5000" min="0" step="500">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Taux d'intérêt annuel <span class="hint">(financement)</span></label>
-        <div class="input-wrap suffix-input">
-          <span class="prefix">%</span>
-          <input type="number" id="a_taux" value="6.99" min="0" step="0.01" style="padding-left:28px;">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Terme de financement <span class="hint">(mois)</span></label>
-        <div class="input-wrap">
-          <input type="number" id="a_terme" value="60" min="12" max="96" step="12">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Valeur résiduelle estimée à terme <span class="hint">(%)</span></label>
-        <div class="input-wrap suffix-input">
-          <span class="prefix">%</span>
-          <input type="number" id="a_residuel" value="40" min="0" max="90" step="1" style="padding-left:28px;">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Assurance mensuelle</label>
-        <div class="input-wrap">
-          <span class="prefix">$</span>
-          <input type="number" id="a_assurance" value="150" min="0" step="10">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Entretien & réparations <span class="hint">($/an)</span></label>
-        <div class="input-wrap">
-          <span class="prefix">$</span>
-          <input type="number" id="a_entretien" value="1200" min="0" step="100">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Immatriculation <span class="hint">($/an)</span></label>
-        <div class="input-wrap">
-          <span class="prefix">$</span>
-          <input type="number" id="a_immat" value="300" min="0" step="50">
-        </div>
-      </div>
+      <p class="panel-subtitle">Financement — coût total de possession</p>
+      <div class="form-group"><label>Prix du véhicule <span class="hint">(avant taxes)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="a1_prix" value="35000" min="0" step="500"></div></div>
+      <div class="form-group"><label>Mise de fonds</label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="a1_mise" value="5000" min="0" step="500"></div></div>
+      <div class="form-group"><label>Taux d'intérêt annuel <span class="hint">(%)</span></label><div class="input-wrap"><span class="prefix">%</span><input type="number" id="a1_taux" value="6.99" min="0" step="0.01"></div></div>
+      <div class="form-group"><label>Terme financement <span class="hint">(mois)</span></label><div class="input-wrap"><span class="prefix">#</span><input type="number" id="a1_terme" value="60" min="12" max="96" step="12"></div></div>
+      <div class="form-group"><label>Valeur résiduelle à terme <span class="hint">(%)</span></label><div class="input-wrap"><span class="prefix">%</span><input type="number" id="a1_residuel" value="40" min="0" max="90" step="1"></div></div>
+      <div class="form-group"><label>Assurance mensuelle</label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="a1_assurance" value="150" min="0" step="10"></div></div>
+      <div class="form-group"><label>Entretien & réparations <span class="hint">($/an)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="a1_entretien" value="1200" min="0" step="100"></div></div>
+      <div class="form-group"><label>Immatriculation <span class="hint">($/an)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="a1_immat" value="300" min="0" step="50"></div></div>
     </div>
-
-    <!-- LOCATION -->
-    <div class="form-panel location fade-in-delay">
+    <div class="form-panel col-b">
       <div class="panel-title"><i class="fas fa-file-contract" style="color:var(--teal)"></i> Scénario Location</div>
-      <p class="panel-subtitle">Bail — coût sans propriété</p>
-
-      <div class="form-group">
-        <label>Paiement mensuel <span class="hint">(avant taxes)</span></label>
-        <div class="input-wrap">
-          <span class="prefix">$</span>
-          <input type="number" id="l_mensuel" value="450" min="0" step="10">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Terme du bail <span class="hint">(mois)</span></label>
-        <div class="input-wrap">
-          <input type="number" id="l_terme" value="48" min="12" max="72" step="12">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Kilométrage annuel inclus</label>
-        <div class="input-wrap">
-          <input type="number" id="l_km_inclus" value="20000" min="0" step="1000">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Kilométrage annuel réel prévu</label>
-        <div class="input-wrap">
-          <input type="number" id="l_km_reel" value="20000" min="0" step="1000">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Frais par km excédentaire <span class="hint">($/km)</span></label>
-        <div class="input-wrap">
-          <span class="prefix">$</span>
-          <input type="number" id="l_frais_km" value="0.10" min="0" step="0.01">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Mise de fonds bail <span class="hint">(optionnelle)</span></label>
-        <div class="input-wrap">
-          <span class="prefix">$</span>
-          <input type="number" id="l_mise" value="0" min="0" step="500">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Assurance mensuelle</label>
-        <div class="input-wrap">
-          <span class="prefix">$</span>
-          <input type="number" id="l_assurance" value="175" min="0" step="10">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Frais fin de bail <span class="hint">(inspection, usure)</span></label>
-        <div class="input-wrap">
-          <span class="prefix">$</span>
-          <input type="number" id="l_frais_fin" value="500" min="0" step="100">
-        </div>
-      </div>
-
-      <div class="form-group" style="margin-bottom:0;">
-        <label>Immatriculation <span class="hint">($/an)</span></label>
-        <div class="input-wrap">
-          <span class="prefix">$</span>
-          <input type="number" id="l_immat" value="300" min="0" step="50">
-        </div>
-      </div>
+      <p class="panel-subtitle">Bail — sans propriété</p>
+      <div class="form-group"><label>Paiement mensuel <span class="hint">(avant taxes)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="l1_mensuel" value="450" min="0" step="10"></div></div>
+      <div class="form-group"><label>Terme du bail <span class="hint">(mois)</span></label><div class="input-wrap"><span class="prefix">#</span><input type="number" id="l1_terme" value="48" min="12" max="72" step="12"></div></div>
+      <div class="form-group"><label>Kilométrage inclus/an</label><div class="input-wrap"><span class="prefix">↔</span><input type="number" id="l1_km_inclus" value="20000" min="0" step="1000"></div></div>
+      <div class="form-group"><label>Kilométrage réel prévu/an</label><div class="input-wrap"><span class="prefix">↔</span><input type="number" id="l1_km_reel" value="20000" min="0" step="1000"></div></div>
+      <div class="form-group"><label>Frais km excédentaire <span class="hint">($/km)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="l1_frais_km" value="0.10" min="0" step="0.01"></div></div>
+      <div class="form-group"><label>Mise de fonds bail <span class="hint">(optionnel)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="l1_mise" value="0" min="0" step="500"></div></div>
+      <div class="form-group"><label>Assurance mensuelle</label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="l1_assurance" value="175" min="0" step="10"></div></div>
+      <div class="form-group"><label>Frais fin de bail <span class="hint">(inspection)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="l1_frais_fin" value="500" min="0" step="100"></div></div>
+      <div class="form-group"><label>Immatriculation <span class="hint">($/an)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="l1_immat" value="300" min="0" step="50"></div></div>
     </div>
   </div>
 
-  <!-- BOUTONS -->
-  <div style="max-width:480px; margin: 0 auto 56px;">
-    <button class="btn-calc" onclick="calculer()"><i class="fas fa-calculator" style="margin-right:10px;"></i>Calculer et comparer</button>
-    <button class="btn-reset" onclick="reinitialiser()">Réinitialiser les valeurs</button>
+  <div class="calc-actions">
+    <button class="btn-calc" onclick="calcAchatLocation()"><i class="fas fa-calculator" style="margin-right:9px"></i>Calculer et comparer</button>
+    <button class="btn-reset" onclick="resetPanel('panel0')">Réinitialiser</button>
   </div>
 
-  <!-- ===== RÉSULTATS ===== -->
-  <div id="results">
-
+  <div class="results-block" id="res0">
     <div class="results-header">
-      <h2>Résultats de votre comparaison</h2>
-      <p>Basé sur les paramètres saisis — taxes québécoises (TPS + TVQ = 14,975 %) incluses</p>
+      <h2>Achat vs Location — Résultats</h2>
+      <p>Taxes québécoises incluses (TPS + TVQ = 14,975 %)</p>
     </div>
-
-    <!-- KPI Cards -->
     <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-label">Mensualité totale</div>
-        <div class="kpi-values">
-          <div class="kpi-val"><span class="kpi-tag achat">Achat</span><span class="kpi-num" id="kpi_mensuel_achat">—</span></div>
-          <div class="kpi-val"><span class="kpi-tag location">Location</span><span class="kpi-num" id="kpi_mensuel_location">—</span></div>
-        </div>
-        <div class="kpi-winner" id="kpi_mensuel_win"></div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Coût total sur terme</div>
-        <div class="kpi-values">
-          <div class="kpi-val"><span class="kpi-tag achat">Achat</span><span class="kpi-num" id="kpi_total_achat">—</span></div>
-          <div class="kpi-val"><span class="kpi-tag location">Location</span><span class="kpi-num" id="kpi_total_location">—</span></div>
-        </div>
-        <div class="kpi-winner" id="kpi_total_win"></div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Coût réel par kilomètre</div>
-        <div class="kpi-values">
-          <div class="kpi-val"><span class="kpi-tag achat">Achat</span><span class="kpi-num" id="kpi_km_achat">—</span></div>
-          <div class="kpi-val"><span class="kpi-tag location">Location</span><span class="kpi-num" id="kpi_km_location">—</span></div>
-        </div>
-        <div class="kpi-winner" id="kpi_km_win"></div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Avoir net à terme</div>
-        <div class="kpi-values">
-          <div class="kpi-val"><span class="kpi-tag achat">Achat</span><span class="kpi-num" id="kpi_avoir_achat">—</span></div>
-          <div class="kpi-val"><span class="kpi-tag location">Location</span><span class="kpi-num" id="kpi_avoir_location">—</span></div>
-        </div>
-        <div class="kpi-winner" id="kpi_avoir_win"></div>
-      </div>
+      <div class="kpi-card"><div class="kpi-label">Mensualité totale</div><div class="kpi-values"><div class="kpi-val"><span class="kpi-tag col-a">Achat</span><span class="kpi-num" id="r0_m_a">—</span></div><div class="kpi-val"><span class="kpi-tag col-b">Location</span><span class="kpi-num" id="r0_m_l">—</span></div></div><div class="kpi-winner" id="r0_m_w"></div></div>
+      <div class="kpi-card"><div class="kpi-label">Coût net total</div><div class="kpi-values"><div class="kpi-val"><span class="kpi-tag col-a">Achat</span><span class="kpi-num" id="r0_t_a">—</span></div><div class="kpi-val"><span class="kpi-tag col-b">Location</span><span class="kpi-num" id="r0_t_l">—</span></div></div><div class="kpi-winner" id="r0_t_w"></div></div>
+      <div class="kpi-card"><div class="kpi-label">Coût par kilomètre</div><div class="kpi-values"><div class="kpi-val"><span class="kpi-tag col-a">Achat</span><span class="kpi-num" id="r0_k_a">—</span></div><div class="kpi-val"><span class="kpi-tag col-b">Location</span><span class="kpi-num" id="r0_k_l">—</span></div></div><div class="kpi-winner" id="r0_k_w"></div></div>
+      <div class="kpi-card"><div class="kpi-label">Avoir net à terme</div><div class="kpi-values"><div class="kpi-val"><span class="kpi-tag col-a">Achat</span><span class="kpi-num" id="r0_av_a">—</span></div><div class="kpi-val"><span class="kpi-tag col-b">Location</span><span class="kpi-num" id="r0_av_l">—</span></div></div><div class="kpi-winner" id="r0_av_w"></div></div>
     </div>
-
-    <!-- Graphique -->
-    <div class="chart-panel">
-      <h3><i class="fas fa-chart-line" style="color:var(--teal); margin-right:8px;"></i>Accumulation des coûts dans le temps</h3>
-      <p class="chart-desc">Coûts cumulés mois par mois — les deux courbes ne couvrent pas nécessairement la même période.</p>
-      <div class="chart-wrap">
-        <canvas id="coutChart"></canvas>
-      </div>
-    </div>
-
-    <!-- Insights éducatifs -->
+    <div class="chart-panel"><h3><i class="fas fa-chart-area" style="color:var(--teal);margin-right:8px"></i>Coûts cumulés dans le temps</h3><p class="chart-desc">Évolution mensuelle des dépenses nettes — valeur résiduelle déduite à l'achat.</p><div class="chart-wrap"><canvas id="chart0"></canvas></div></div>
     <div class="insights-grid">
-      <div class="insight-card">
-        <div class="insight-icon"><i class="fas fa-home"></i></div>
-        <h4>Propriété & avoir net</h4>
-        <p id="insight_avoir">—</p>
-      </div>
-      <div class="insight-card">
-        <div class="insight-icon"><i class="fas fa-road"></i></div>
-        <h4>Impact du kilométrage</h4>
-        <p id="insight_km">—</p>
-      </div>
-      <div class="insight-card">
-        <div class="insight-icon"><i class="fas fa-balance-scale"></i></div>
-        <h4>Différence nette</h4>
-        <p id="insight_diff">—</p>
-      </div>
+      <div class="insight-card"><div class="insight-icon"><i class="fas fa-home"></i></div><h4>Propriété & avoir net</h4><p id="ins0_1">—</p></div>
+      <div class="insight-card"><div class="insight-icon"><i class="fas fa-road"></i></div><h4>Impact kilométrage</h4><p id="ins0_2">—</p></div>
+      <div class="insight-card"><div class="insight-icon"><i class="fas fa-coins"></i></div><h4>Différence nette</h4><p id="ins0_3">—</p></div>
     </div>
-
-    <!-- Tableau détaillé -->
-    <div class="breakdown-panel">
-      <h3><i class="fas fa-table" style="color:var(--teal); margin-right:8px;"></i>Détail des coûts</h3>
-      <table class="breakdown-table">
-        <thead>
-          <tr>
-            <th>Poste de dépense</th>
-            <th class="achat-val">Achat ($)</th>
-            <th class="location-val">Location ($)</th>
-            <th>Différence</th>
-          </tr>
-        </thead>
-        <tbody id="breakdown_tbody">
-        </tbody>
-      </table>
+    <div class="breakdown-panel"><h3><i class="fas fa-list" style="color:var(--teal);margin-right:8px"></i>Détail des coûts</h3>
+      <table><thead><tr><th>Poste</th><th class="val-a">Achat</th><th class="val-b">Location</th></tr></thead><tbody id="tb0"></tbody></table>
     </div>
-
-    <!-- CTA -->
-    <div class="cta-section">
-      <h2>Ces chiffres méritent une stratégie</h2>
-      <p>Un véhicule est souvent la 2e plus grande dépense après le logement. Discutons de comment optimiser vos liquidités et atteindre vos objectifs financiers.</p>
-      <a href="https://api.leadconnectorhq.com/widget/booking/Ji600NehzD0aMO3Dl5A5" class="btn btn-primary" target="_blank"><i class="fas fa-calendar-check" style="margin-right:8px;"></i>Prendre rendez-vous avec Nicolas</a>
-    </div>
-
+    <div class="cta-section"><h2>Ces chiffres méritent une stratégie</h2><p>Un véhicule est souvent la 2e plus grande dépense de votre vie. Parlons de comment optimiser vos liquidités.</p><a href="https://api.leadconnectorhq.com/widget/booking/Ji600NehzD0aMO3Dl5A5" class="btn btn-primary" target="_blank"><i class="fas fa-calendar-check" style="margin-right:8px"></i>Prendre rendez-vous</a></div>
   </div>
+</div>
+
+
+<!-- ========================================
+     TAB 2 — ÉLECTRIQUE VS ESSENCE
+     ======================================== -->
+<div class="tab-panel" id="panel1">
+
+  <div class="disclaimer" style="margin-top:8px;">
+    <p><strong>Outil éducatif :</strong> Estimations basées sur vos données. Inclut les rabais gouvernementaux en vigueur au Québec (2025–2026). Ne constitue pas un conseil financier personnalisé.</p>
+  </div>
+
+  <div class="form-grid">
+    <div class="form-panel col-a">
+      <div class="panel-title"><i class="fas fa-bolt" style="color:var(--vert-logo)"></i> Véhicule Électrique</div>
+      <p class="panel-subtitle">VÉ ou hybride rechargeable</p>
+      <div class="form-group"><label>Prix d'achat <span class="hint">(avant taxes)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="e_prix" value="55000" min="0" step="500"></div></div>
+      <div class="form-group"><label>Rabais gouvernementaux <span class="hint">(Roulez Vert + fédéral)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="e_rabais" value="12000" min="0" step="500"></div><div class="form-note">Québec 2025 : jusqu'à 12 000 $ combinés (7 000 $ provincial + 5 000 $ fédéral)</div></div>
+      <div class="form-group"><label>Consommation <span class="hint">(kWh/100 km)</span></label><div class="input-wrap"><span class="prefix">⚡</span><input type="number" id="e_conso" value="18" min="5" step="0.5"></div></div>
+      <div class="form-group"><label>Tarif électricité <span class="hint">(¢/kWh)</span></label><div class="input-wrap"><span class="prefix">¢</span><input type="number" id="e_tarif" value="7.9" min="1" step="0.1"></div><div class="form-note">Hydro-Québec : ~7,9 ¢/kWh (tarif D domestique 2025)</div></div>
+      <div class="form-group"><label>Entretien annuel estimé</label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="e_entretien" value="700" min="0" step="100"></div></div>
+      <div class="form-group"><label>Assurance mensuelle</label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="e_assurance" value="165" min="0" step="10"></div></div>
+      <div class="form-group"><label>Installation borne domicile <span class="hint">(une fois)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="e_borne" value="1500" min="0" step="100"></div></div>
+    </div>
+    <div class="form-panel col-b">
+      <div class="panel-title"><i class="fas fa-gas-pump" style="color:var(--teal)"></i> Véhicule Essence</div>
+      <p class="panel-subtitle">Moteur à combustion</p>
+      <div class="form-group"><label>Prix d'achat <span class="hint">(avant taxes)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="g_prix" value="38000" min="0" step="500"></div></div>
+      <div class="form-group"><label>Rabais / incitatif</label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="g_rabais" value="0" min="0" step="500"></div></div>
+      <div class="form-group"><label>Consommation <span class="hint">(L/100 km)</span></label><div class="input-wrap"><span class="prefix">L</span><input type="number" id="g_conso" value="9.5" min="1" step="0.5"></div></div>
+      <div class="form-group"><label>Prix de l'essence <span class="hint">($/L)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="g_prix_essence" value="1.75" min="0.50" step="0.05"></div></div>
+      <div class="form-group"><label>Entretien annuel estimé</label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="g_entretien" value="1400" min="0" step="100"></div></div>
+      <div class="form-group"><label>Assurance mensuelle</label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="g_assurance" value="150" min="0" step="10"></div></div>
+    </div>
+  </div>
+
+  <div class="form-grid" style="grid-template-columns:1fr;margin-top:-12px;">
+    <div class="form-panel col-a" style="border-top-color:#888;">
+      <div class="panel-title" style="font-size:1rem"><i class="fas fa-sliders-h" style="color:#888"></i> Paramètres communs</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+        <div class="form-group"><label>Taux financement <span class="hint">(%)</span></label><div class="input-wrap"><span class="prefix">%</span><input type="number" id="ev_taux" value="6.99" min="0" step="0.01"></div></div>
+        <div class="form-group"><label>Terme <span class="hint">(mois)</span></label><div class="input-wrap"><span class="prefix">#</span><input type="number" id="ev_terme" value="60" min="12" max="96" step="12"></div></div>
+        <div class="form-group"><label>Kilométrage/an</label><div class="input-wrap"><span class="prefix">↔</span><input type="number" id="ev_km" value="20000" min="1000" step="1000"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="calc-actions">
+    <button class="btn-calc" onclick="calcElectrique()"><i class="fas fa-bolt" style="margin-right:9px"></i>Calculer et comparer</button>
+    <button class="btn-reset" onclick="resetPanel('panel1')">Réinitialiser</button>
+  </div>
+
+  <div class="results-block" id="res1">
+    <div class="results-header">
+      <h2>Électrique vs Essence — Résultats</h2>
+      <p>Sur la durée du financement — rabais et coûts d'énergie inclus</p>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">Coût mensuel total</div><div class="kpi-values"><div class="kpi-val"><span class="kpi-tag col-a">Électrique</span><span class="kpi-num" id="r1_m_a">—</span></div><div class="kpi-val"><span class="kpi-tag col-b">Essence</span><span class="kpi-num" id="r1_m_b">—</span></div></div><div class="kpi-winner" id="r1_m_w"></div></div>
+      <div class="kpi-card"><div class="kpi-label">Coût total sur terme</div><div class="kpi-values"><div class="kpi-val"><span class="kpi-tag col-a">Électrique</span><span class="kpi-num" id="r1_t_a">—</span></div><div class="kpi-val"><span class="kpi-tag col-b">Essence</span><span class="kpi-num" id="r1_t_b">—</span></div></div><div class="kpi-winner" id="r1_t_w"></div></div>
+      <div class="kpi-card"><div class="kpi-label">Carburant/énergie total</div><div class="kpi-values"><div class="kpi-val"><span class="kpi-tag col-a">Électrique</span><span class="kpi-num" id="r1_e_a">—</span></div><div class="kpi-val"><span class="kpi-tag col-b">Essence</span><span class="kpi-num" id="r1_e_b">—</span></div></div><div class="kpi-winner" id="r1_e_w"></div></div>
+      <div class="kpi-card"><div class="kpi-label">Économies sur terme</div><div class="kpi-values"><div class="kpi-val"><span class="kpi-tag col-a" style="color:#888">vs Essence</span><span class="kpi-num" id="r1_eco">—</span></div></div><div class="kpi-winner" id="r1_eco_w"></div></div>
+    </div>
+    <div class="chart-panel"><h3><i class="fas fa-chart-area" style="color:var(--teal);margin-right:8px"></i>Coûts cumulés — Électrique vs Essence</h3><p class="chart-desc">Accumulation des coûts mois par mois, rabais déduits à l'achat.</p><div class="chart-wrap"><canvas id="chart1"></canvas></div></div>
+    <div class="insights-grid">
+      <div class="insight-card"><div class="insight-icon"><i class="fas fa-plug"></i></div><h4>Économie d'énergie</h4><p id="ins1_1">—</p></div>
+      <div class="insight-card"><div class="insight-icon"><i class="fas fa-tools"></i></div><h4>Entretien réduit</h4><p id="ins1_2">—</p></div>
+      <div class="insight-card"><div class="insight-icon"><i class="fas fa-sync"></i></div><h4>Point d'équilibre</h4><p id="ins1_3">—</p></div>
+    </div>
+    <div class="breakdown-panel"><h3><i class="fas fa-list" style="color:var(--teal);margin-right:8px"></i>Détail des coûts</h3>
+      <table><thead><tr><th>Poste</th><th class="val-a">Électrique</th><th class="val-b">Essence</th></tr></thead><tbody id="tb1"></tbody></table>
+    </div>
+    <div class="cta-section"><h2>Le VÉ : un choix financier aussi</h2><p>Les rabais et économies d'énergie changent la donne. Analysons comment ce choix s'intègre dans votre plan financier global.</p><a href="https://api.leadconnectorhq.com/widget/booking/Ji600NehzD0aMO3Dl5A5" class="btn btn-primary" target="_blank"><i class="fas fa-calendar-check" style="margin-right:8px"></i>Prendre rendez-vous</a></div>
+  </div>
+</div>
+
+
+<!-- ========================================
+     TAB 3 — VOITURE VS INVESTIR
+     ======================================== -->
+<div class="tab-panel" id="panel2">
+
+  <div class="disclaimer" style="margin-top:8px;">
+    <p><strong>Outil éducatif :</strong> Compare le coût d'opportunité d'un véhicule versus l'investissement de ces mêmes sommes. Ne constitue pas un conseil en placement.</p>
+  </div>
+
+  <div class="form-grid">
+    <div class="form-panel col-a">
+      <div class="panel-title"><i class="fas fa-car" style="color:var(--vert-logo)"></i> Coût du véhicule</div>
+      <p class="panel-subtitle">Ce que le véhicule vous coûte réellement</p>
+      <div class="form-group"><label>Prix du véhicule <span class="hint">(avant taxes)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="vi_prix" value="35000" min="0" step="500"></div></div>
+      <div class="form-group"><label>Mise de fonds</label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="vi_mise" value="5000" min="0" step="500"></div></div>
+      <div class="form-group"><label>Taux financement <span class="hint">(%)</span></label><div class="input-wrap"><span class="prefix">%</span><input type="number" id="vi_taux" value="6.99" min="0" step="0.01"></div></div>
+      <div class="form-group"><label>Terme <span class="hint">(mois)</span></label><div class="input-wrap"><span class="prefix">#</span><input type="number" id="vi_terme" value="60" min="12" max="96" step="12"></div></div>
+      <div class="form-group"><label>Valeur résiduelle <span class="hint">(%)</span></label><div class="input-wrap"><span class="prefix">%</span><input type="number" id="vi_residuel" value="40" min="0" max="90" step="1"></div></div>
+      <div class="form-group"><label>Assurance mensuelle</label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="vi_assurance" value="150" min="0" step="10"></div></div>
+      <div class="form-group"><label>Entretien & autres <span class="hint">($/mois)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="vi_entretien" value="130" min="0" step="10"></div></div>
+    </div>
+    <div class="form-panel col-b">
+      <div class="panel-title"><i class="fas fa-chart-line" style="color:var(--teal)"></i> Scénario Investissement</div>
+      <p class="panel-subtitle">Et si vous investissiez ces sommes ?</p>
+      <div class="form-group"><label>Rendement annuel espéré <span class="hint">(%)</span></label><div class="input-wrap"><span class="prefix">%</span><input type="number" id="inv_taux" value="7" min="0" step="0.5"></div><div class="form-note">Référence historique : portefeuille équilibré ~5–7 % / an long terme</div></div>
+      <div class="form-group"><label>Véhicule minimal nécessaire <span class="hint">($/mois)</span></label><div class="input-wrap"><span class="prefix">$</span><input type="number" id="inv_transport" value="400" min="0" step="50"></div><div class="form-note">Transport alternatif estimé (voiture usagée, covoiturage, transport en commun, etc.)</div></div>
+      <div class="form-group"><label>Type de compte d'investissement</label>
+        <select id="inv_compte" style="width:100%;padding:9px 12px;border:1.5px solid #e0e0e0;border-radius:8px;font-family:'Inter',sans-serif;font-size:0.9rem;color:var(--texte);background:var(--blanc);cursor:pointer;">
+          <option value="0">CELI (croissance non imposée)</option>
+          <option value="0.27">REER (imposition au retrait ~27 %)</option>
+          <option value="0.27">Compte non enregistré (~27 % sur gains)</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Horizon d'analyse <span class="hint">(années)</span></label><div class="input-wrap"><span class="prefix">#</span><input type="number" id="inv_horizon" value="10" min="2" max="30" step="1"></div><div class="form-note">Au-delà du terme du prêt, combien d'années continuez-vous à investir ?</div></div>
+    </div>
+  </div>
+
+  <div class="calc-actions">
+    <button class="btn-calc" onclick="calcInvestir()"><i class="fas fa-chart-line" style="margin-right:9px"></i>Calculer le coût d'opportunité</button>
+    <button class="btn-reset" onclick="resetPanel('panel2')">Réinitialiser</button>
+  </div>
+
+  <div class="results-block" id="res2">
+    <div class="results-header">
+      <h2>Voiture vs Investir — Résultats</h2>
+      <p>Coût d'opportunité sur <span id="r2_horizon_label">10 ans</span></p>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">Coût total véhicule (net)</div><div class="kpi-values"><div class="kpi-val"><span class="kpi-tag col-a">Véhicule</span><span class="kpi-num" id="r2_cout_v">—</span></div></div><div class="kpi-winner" id="r2_cout_w" style="color:#888;font-size:0.72rem">coût réel sur l'horizon</div></div>
+      <div class="kpi-card"><div class="kpi-label">Capital investi si épargné</div><div class="kpi-values"><div class="kpi-val"><span class="kpi-tag col-b">Investissement</span><span class="kpi-num" id="r2_inv">—</span></div></div><div class="kpi-winner" id="r2_inv_w" style="color:#888;font-size:0.72rem">valeur finale projetée</div></div>
+      <div class="kpi-card"><div class="kpi-label">Coût d'opportunité</div><div class="kpi-values"><div class="kpi-val"><span class="kpi-tag" style="color:#c0392b">Manque à gagner</span><span class="kpi-num" id="r2_opp">—</span></div></div><div class="kpi-winner" id="r2_opp_w"></div></div>
+      <div class="kpi-card"><div class="kpi-label">Intérêts composés générés</div><div class="kpi-values"><div class="kpi-val"><span class="kpi-tag col-b">Rendement</span><span class="kpi-num" id="r2_int">—</span></div></div><div class="kpi-winner" id="r2_int_w" style="color:#888;font-size:0.72rem">sur l'horizon complet</div></div>
+    </div>
+    <div class="chart-panel"><h3><i class="fas fa-chart-area" style="color:var(--teal);margin-right:8px"></i>Croissance du portefeuille vs coûts véhicule</h3><p class="chart-desc">Valeur accumulée si les sommes consacrées au véhicule étaient investies — comparé au coût cumulé réel du véhicule.</p><div class="chart-wrap"><canvas id="chart2"></canvas></div></div>
+    <div class="insights-grid">
+      <div class="insight-card"><div class="insight-icon"><i class="fas fa-hourglass-half"></i></div><h4>La valeur du temps</h4><p id="ins2_1">—</p></div>
+      <div class="insight-card"><div class="insight-icon"><i class="fas fa-balance-scale"></i></div><h4>Le vrai coût mensuel</h4><p id="ins2_2">—</p></div>
+      <div class="insight-card"><div class="insight-icon"><i class="fas fa-lightbulb"></i></div><h4>Perspective éducative</h4><p id="ins2_3">—</p></div>
+    </div>
+    <div class="breakdown-panel"><h3><i class="fas fa-list" style="color:var(--teal);margin-right:8px"></i>Projection annuelle</h3>
+      <table><thead><tr><th>Année</th><th class="val-b">Valeur investissement</th><th class="val-a">Coût véhicule cumulé</th><th>Écart</th></tr></thead><tbody id="tb2"></tbody></table>
+    </div>
+    <div class="cta-section"><h2>Le vrai coût d'une voiture</h2><p>Ces chiffres ne signifient pas qu'il ne faut pas de voiture — mais qu'il vaut la peine d'y réfléchir avec une stratégie financière claire.</p><a href="https://api.leadconnectorhq.com/widget/booking/Ji600NehzD0aMO3Dl5A5" class="btn btn-primary" target="_blank"><i class="fas fa-calendar-check" style="margin-right:8px"></i>Discuter de ma stratégie</a></div>
+  </div>
+</div>
 
 </main>
 
 <script>
 // ===== CONSTANTES =====
-const TAXES = 0.14975; // TPS + TVQ Québec
-let chartInstance = null;
+const TAXES = 0.14975;
+const charts = { 0: null, 1: null, 2: null };
 
 // ===== FORMAT =====
-function fmt(n, decimals = 0) {
-  return new Intl.NumberFormat('fr-CA', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(n);
-}
-function fmtDollar(n) { return fmt(n) + ' $'; }
-function fmtCents(n) { return (n * 100).toFixed(1) + ' ¢'; }
+const fmtN = (n, d=0) => new Intl.NumberFormat('fr-CA', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
+const fmtD = n => fmtN(n) + ' $';
+const fmtC = n => (n * 100).toFixed(1) + ' ¢';
 
-// ===== CALCUL PMT =====
-function pmt(principal, annualRate, months) {
-  if (annualRate === 0) return principal / months;
-  const r = annualRate / 100 / 12;
-  return principal * r / (1 - Math.pow(1 + r, -months));
+// ===== TABS =====
+function switchTab(idx) {
+  document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i === idx));
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i === idx));
+  moveIndicator(idx);
 }
 
-// ===== CALCUL PRINCIPAL =====
-function calculer() {
-  // --- Inputs achat ---
-  const a_prix       = parseFloat(document.getElementById('a_prix').value) || 0;
-  const a_mise       = parseFloat(document.getElementById('a_mise').value) || 0;
-  const a_taux       = parseFloat(document.getElementById('a_taux').value) || 0;
-  const a_terme      = parseInt(document.getElementById('a_terme').value) || 60;
-  const a_residuel   = parseFloat(document.getElementById('a_residuel').value) / 100 || 0;
-  const a_assurance  = parseFloat(document.getElementById('a_assurance').value) || 0;
-  const a_entretien  = parseFloat(document.getElementById('a_entretien').value) || 0;
-  const a_immat      = parseFloat(document.getElementById('a_immat').value) || 0;
-
-  // --- Inputs location ---
-  const l_mensuel    = parseFloat(document.getElementById('l_mensuel').value) || 0;
-  const l_terme      = parseInt(document.getElementById('l_terme').value) || 48;
-  const l_km_inclus  = parseFloat(document.getElementById('l_km_inclus').value) || 0;
-  const l_km_reel    = parseFloat(document.getElementById('l_km_reel').value) || 0;
-  const l_frais_km   = parseFloat(document.getElementById('l_frais_km').value) || 0;
-  const l_mise       = parseFloat(document.getElementById('l_mise').value) || 0;
-  const l_assurance  = parseFloat(document.getElementById('l_assurance').value) || 0;
-  const l_frais_fin  = parseFloat(document.getElementById('l_frais_fin').value) || 0;
-  const l_immat      = parseFloat(document.getElementById('l_immat').value) || 0;
-
-  // ===== CALCULS ACHAT =====
-  const a_prix_ttc    = a_prix * (1 + TAXES);
-  const a_emprunt     = a_prix_ttc - a_mise;
-  const a_pmt         = pmt(a_emprunt, a_taux, a_terme);
-  const a_total_financement = a_pmt * a_terme + a_mise;
-  const a_assurance_total   = a_assurance * a_terme;
-  const a_entretien_total   = (a_entretien / 12) * a_terme;
-  const a_immat_total       = (a_immat / 12) * a_terme;
-  const a_valeur_residuelle = a_prix * a_residuel; // valeur future hors taxes
-  const a_cout_brut   = a_total_financement + a_assurance_total + a_entretien_total + a_immat_total;
-  const a_cout_net    = a_cout_brut - a_valeur_residuelle; // coût net = dépenses - valeur récupérable
-  const a_km_total    = (l_km_reel / 12) * a_terme; // kmreel sur même période pour comparaison
-  const a_km_cost     = a_cout_net / (a_km_total || 1);
-  const a_mensuel_total = a_pmt + a_assurance + (a_entretien / 12) + (a_immat / 12);
-
-  // ===== CALCULS LOCATION =====
-  const l_mensuel_ttc = l_mensuel * (1 + TAXES);
-  const l_mensuel_total_brut = l_mensuel_ttc + l_assurance + (l_immat / 12);
-  const l_paiements_total    = l_mensuel_ttc * l_terme;
-  const l_assurance_total    = l_assurance * l_terme;
-  const l_immat_total        = (l_immat / 12) * l_terme;
-  const l_km_excedent_annuel = Math.max(0, l_km_reel - l_km_inclus);
-  const l_frais_km_total     = l_km_excedent_annuel * l_frais_km * (l_terme / 12);
-  const l_cout_total         = l_paiements_total + l_assurance_total + l_immat_total + l_mise + l_frais_fin + l_frais_km_total;
-  const l_km_total           = l_km_reel * (l_terme / 12);
-  const l_km_cost            = l_cout_total / (l_km_total || 1);
-
-  // ===== AFFICHAGE KPIs =====
-  document.getElementById('kpi_mensuel_achat').textContent = fmtDollar(a_mensuel_total);
-  document.getElementById('kpi_mensuel_location').textContent = fmtDollar(l_mensuel_total_brut);
-  setWinner('kpi_mensuel_win', a_mensuel_total, l_mensuel_total_brut, true);
-
-  document.getElementById('kpi_total_achat').textContent = fmtDollar(a_cout_net);
-  document.getElementById('kpi_total_location').textContent = fmtDollar(l_cout_total);
-  setWinner('kpi_total_win', a_cout_net, l_cout_total, true);
-
-  document.getElementById('kpi_km_achat').textContent = fmtCents(a_km_cost);
-  document.getElementById('kpi_km_location').textContent = fmtCents(l_km_cost);
-  setWinner('kpi_km_win', a_km_cost, l_km_cost, true);
-
-  document.getElementById('kpi_avoir_achat').textContent = fmtDollar(a_valeur_residuelle);
-  document.getElementById('kpi_avoir_location').textContent = '0 $';
-  setWinner('kpi_avoir_win', a_valeur_residuelle, 0, false); // higher is better for avoir
-
-  // ===== INSIGHTS =====
-  const diff = Math.abs(a_cout_net - l_cout_total);
-  const winner = a_cout_net < l_cout_total ? 'achat' : 'location';
-
-  document.getElementById('insight_avoir').innerHTML =
-    `À terme, l'achat vous laisse un véhicule d'une valeur estimée de <span class="highlight">${fmtDollar(a_valeur_residuelle)}</span>. La location vous retourne <span class="highlight neg">0 $</span> d'actif.`;
-
-  if (l_km_excedent_annuel > 0) {
-    document.getElementById('insight_km').innerHTML =
-      `Vous prévoyez dépasser le forfait de <span class="highlight neg">${fmt(l_km_excedent_annuel)} km/an</span>, ce qui génère <span class="highlight neg">${fmtDollar(l_frais_km_total)}</span> en frais excédentaires sur le bail.`;
-  } else {
-    document.getElementById('insight_km').innerHTML =
-      `Votre kilométrage prévu est dans le forfait du bail. Aucun frais excédentaire anticipé. Notez que dépasser la limite en cours de bail entraîne des pénalités importantes.`;
-  }
-
-  document.getElementById('insight_diff').innerHTML =
-    `Sur la période comparée, l'<span class="highlight">${winner}</span> vous coûte <span class="highlight">${fmtDollar(diff)}</span> de moins en dépenses nettes (valeur résiduelle déduite pour l'achat).`;
-
-  // ===== TABLEAU =====
-  const rows = [
-    ['Paiements de financement / bail (taxes incl.)', fmtDollar(a_total_financement), fmtDollar(l_paiements_total)],
-    ['Mise de fonds', fmtDollar(a_mise), fmtDollar(l_mise)],
-    ['Assurance', fmtDollar(a_assurance_total), fmtDollar(l_assurance_total)],
-    ['Entretien & réparations', fmtDollar(a_entretien_total), '—'],
-    ['Immatriculation', fmtDollar(a_immat_total), fmtDollar(l_immat_total)],
-    ['Frais km excédentaires', '—', fmtDollar(l_frais_km_total)],
-    ['Frais fin de bail', '—', fmtDollar(l_frais_fin)],
-    ['<strong>Sous-total dépenses</strong>', `<strong>${fmtDollar(a_cout_brut)}</strong>`, `<strong>${fmtDollar(l_cout_total)}</strong>`],
-    ['<em>Valeur résiduelle récupérée</em>', `<em style="color:var(--vert-logo)">− ${fmtDollar(a_valeur_residuelle)}</em>`, '<em>0 $</em>'],
-  ];
-
-  let tbody = '';
-  rows.forEach(r => {
-    const diff_val = parseFloat((r[1] || '').replace(/\s/g,'').replace(',','.').replace('$','')) -
-                     parseFloat((r[2] || '').replace(/\s/g,'').replace(',','.').replace('$',''));
-    tbody += `<tr><td>${r[0]}</td><td class="achat-val">${r[1]}</td><td class="location-val">${r[2]}</td><td>—</td></tr>`;
-  });
-  tbody += `<tr class="total-row"><td>COÛT NET TOTAL</td><td class="achat-val">${fmtDollar(a_cout_net)}</td><td class="location-val">${fmtDollar(l_cout_total)}</td><td class="winner-cell">${winner === 'achat' ? '✓ Achat' : '✓ Location'} (−${fmtDollar(diff)})</td></tr>`;
-  document.getElementById('breakdown_tbody').innerHTML = tbody;
-
-  // ===== GRAPHIQUE =====
-  buildChart(a_pmt, a_assurance, a_entretien, a_immat, a_terme,
-             l_mensuel_ttc, l_assurance, l_immat, l_frais_km_total, l_terme,
-             a_mise, l_mise + l_frais_fin, a_valeur_residuelle);
-
-  // ===== AFFICHER =====
-  const results = document.getElementById('results');
-  results.classList.add('visible');
-  setTimeout(() => results.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+function moveIndicator(idx) {
+  const btn = document.getElementById('tab' + idx);
+  const ind = document.getElementById('tabIndicator');
+  const wrap = btn.closest('.tabs-inner');
+  const wRect = wrap.getBoundingClientRect();
+  const bRect = btn.getBoundingClientRect();
+  ind.style.left = (bRect.left - wRect.left) + 'px';
+  ind.style.width = bRect.width + 'px';
 }
 
-function setWinner(id, valA, valL, lowerIsBetter) {
+window.addEventListener('load', () => moveIndicator(0));
+window.addEventListener('resize', () => {
+  const active = document.querySelector('.tab-btn.active');
+  if (active) moveIndicator(parseInt(active.id.replace('tab', '')));
+});
+
+// ===== PMT =====
+function pmt(p, r_annuel, n) {
+  if (r_annuel === 0) return p / n;
+  const r = r_annuel / 100 / 12;
+  return p * r / (1 - Math.pow(1 + r, -n));
+}
+
+// ===== WINNER =====
+function setWin(id, a, b, lowerBetter, labelA, labelB) {
   const el = document.getElementById(id);
-  if (Math.abs(valA - valL) < 1) {
-    el.textContent = 'Équivalent';
-    el.className = 'kpi-winner equal';
-    return;
-  }
-  const achatWins = lowerIsBetter ? valA < valL : valA > valL;
-  el.textContent = achatWins ? '✓ Achat plus avantageux' : '✓ Location plus avantageuse';
-  el.className = 'kpi-winner ' + (achatWins ? 'achat-win' : 'location-win');
+  if (!el) return;
+  if (Math.abs(a - b) < 1) { el.textContent = 'Équivalent'; el.className = 'kpi-winner equal'; return; }
+  const aWins = lowerBetter ? a < b : a > b;
+  el.textContent = aWins ? '✓ ' + labelA : '✓ ' + labelB;
+  el.className = 'kpi-winner ' + (aWins ? 'win-a' : 'win-b');
 }
 
-function buildChart(a_pmt, a_assurance, a_entretien, a_immat, a_terme,
-                    l_mensuel_ttc, l_assurance, l_immat, l_frais_km_total, l_terme,
-                    a_mise, l_one_time, a_residuel) {
-  const maxMois = Math.max(a_terme, l_terme);
+// ===== RESET =====
+function resetPanel(panelId) {
+  const panel = document.getElementById(panelId);
+  panel.querySelectorAll('input[type="number"]').forEach(inp => { inp.value = inp.defaultValue; });
+  const idx = parseInt(panelId.replace('panel',''));
+  const res = document.getElementById('res' + idx);
+  if (res) res.classList.remove('visible');
+  if (charts[idx]) { charts[idx].destroy(); charts[idx] = null; }
+}
 
-  const a_mensuel_var = a_pmt + a_assurance + (a_entretien / 12) + (a_immat / 12);
-  const l_mensuel_var = l_mensuel_ttc + l_assurance + (l_immat / 12) + (l_frais_km_total / l_terme);
-
-  const labelsA = [], dataA = [], labelsL = [], dataL = [];
-
-  let cumulA = a_mise;
-  for (let m = 1; m <= a_terme; m++) {
-    cumulA += a_mensuel_var;
-    labelsA.push('M' + m);
-    dataA.push(parseFloat((cumulA - (m === a_terme ? a_residuel : 0)).toFixed(0)));
-  }
-
-  let cumulL = l_one_time;
-  for (let m = 1; m <= l_terme; m++) {
-    cumulL += l_mensuel_var;
-    labelsL.push('M' + m);
-    dataL.push(parseFloat(cumulL.toFixed(0)));
-  }
-
-  // Générer les labels communs
-  const labels = [];
-  const step = Math.ceil(maxMois / 12);
-  for (let m = step; m <= maxMois; m += step) labels.push('M' + m);
-  if (!labels.includes('M' + maxMois)) labels.push('M' + maxMois);
-
-  const getVal = (data, labels_src, target) => {
-    const idx = labels_src.indexOf(target);
-    return idx >= 0 ? data[idx] : null;
-  };
-
-  if (chartInstance) chartInstance.destroy();
-  const ctx = document.getElementById('coutChart').getContext('2d');
-  chartInstance = new Chart(ctx, {
+// ===== CHART BUILDER =====
+function buildLineChart(canvasId, idx, labels, datasets) {
+  if (charts[idx]) charts[idx].destroy();
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  charts[idx] = new Chart(ctx, {
     type: 'line',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: 'Achat — coût net cumulé',
-          data: labels.map(l => getVal(dataA, labelsA, l)),
-          borderColor: '#4e7a51',
-          backgroundColor: 'rgba(78,122,81,0.08)',
-          tension: 0.35,
-          fill: true,
-          pointRadius: 4,
-          pointBackgroundColor: '#4e7a51',
-          borderWidth: 2.5,
-          spanGaps: true
-        },
-        {
-          label: 'Location — coût cumulé',
-          data: labels.map(l => getVal(dataL, labelsL, l)),
-          borderColor: '#018476',
-          backgroundColor: 'rgba(1,132,118,0.08)',
-          tension: 0.35,
-          fill: true,
-          pointRadius: 4,
-          pointBackgroundColor: '#018476',
-          borderWidth: 2.5,
-          spanGaps: true
-        }
-      ]
-    },
+    data: { labels, datasets },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       plugins: {
         legend: { labels: { font: { family: 'Inter', size: 12 }, color: '#555' } },
-        tooltip: {
-          callbacks: {
-            label: ctx => ctx.dataset.label + ' : ' + new Intl.NumberFormat('fr-CA').format(ctx.parsed.y) + ' $'
-          }
-        }
+        tooltip: { callbacks: { label: c => c.dataset.label + ' : ' + fmtN(c.parsed.y) + ' $' } }
       },
       scales: {
-        y: {
-          ticks: {
-            font: { family: 'Inter', size: 11 },
-            callback: v => new Intl.NumberFormat('fr-CA', { notation: 'compact' }).format(v) + ' $'
-          },
-          grid: { color: 'rgba(0,0,0,0.05)' }
-        },
-        x: {
-          ticks: { font: { family: 'Inter', size: 11 } },
-          grid: { display: false }
-        }
+        y: { ticks: { font: { family: 'Inter', size: 11 }, callback: v => fmtN(v/1000, 0) + ' k$' }, grid: { color: 'rgba(0,0,0,0.04)' } },
+        x: { ticks: { font: { family: 'Inter', size: 11 } }, grid: { display: false } }
       }
     }
   });
 }
 
-function reinitialiser() {
-  const defaults = {
-    a_prix:35000, a_mise:5000, a_taux:6.99, a_terme:60, a_residuel:40,
-    a_assurance:150, a_entretien:1200, a_immat:300,
-    l_mensuel:450, l_terme:48, l_km_inclus:20000, l_km_reel:20000,
-    l_frais_km:0.10, l_mise:0, l_assurance:175, l_frais_fin:500, l_immat:300
-  };
-  Object.entries(defaults).forEach(([k,v]) => {
-    const el = document.getElementById(k);
-    if (el) el.value = v;
-  });
-  document.getElementById('results').classList.remove('visible');
-  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+// ===================================
+// CALCULATEUR 1 — ACHAT VS LOCATION
+// ===================================
+function calcAchatLocation() {
+  const v = id => parseFloat(document.getElementById(id).value) || 0;
+  const vi = id => parseInt(document.getElementById(id).value) || 0;
+
+  const a_prix = v('a1_prix'), a_mise = v('a1_mise'), a_taux = v('a1_taux');
+  const a_terme = vi('a1_terme'), a_resid = v('a1_residuel') / 100;
+  const a_ass = v('a1_assurance'), a_ent = v('a1_entretien'), a_imm = v('a1_immat');
+
+  const l_mens = v('l1_mensuel'), l_terme = vi('l1_terme');
+  const l_km_inc = v('l1_km_inclus'), l_km_reel = v('l1_km_reel'), l_frais_km = v('l1_frais_km');
+  const l_mise = v('l1_mise'), l_ass = v('l1_assurance'), l_frais_fin = v('l1_frais_fin'), l_imm = v('l1_immat');
+
+  // Achat
+  const a_ttc = a_prix * (1 + TAXES);
+  const a_pmt = pmt(a_ttc - a_mise, a_taux, a_terme);
+  const a_fin_total = a_pmt * a_terme + a_mise;
+  const a_ass_t = a_ass * a_terme;
+  const a_ent_t = (a_ent / 12) * a_terme;
+  const a_imm_t = (a_imm / 12) * a_terme;
+  const a_resid_val = a_prix * a_resid;
+  const a_brut = a_fin_total + a_ass_t + a_ent_t + a_imm_t;
+  const a_net = a_brut - a_resid_val;
+  const a_m = a_pmt + a_ass + (a_ent / 12) + (a_imm / 12);
+  const a_km_total = l_km_reel * (a_terme / 12);
+  const a_km_c = a_net / (a_km_total || 1);
+
+  // Location
+  const l_ttc = l_mens * (1 + TAXES);
+  const l_pmt_t = l_ttc * l_terme;
+  const l_ass_t = l_ass * l_terme;
+  const l_imm_t = (l_imm / 12) * l_terme;
+  const l_km_exc = Math.max(0, l_km_reel - l_km_inc) * l_frais_km * (l_terme / 12);
+  const l_total = l_pmt_t + l_ass_t + l_imm_t + l_mise + l_frais_fin + l_km_exc;
+  const l_m = l_ttc + l_ass + (l_imm / 12);
+  const l_km_c = l_total / ((l_km_reel * l_terme / 12) || 1);
+
+  // KPIs
+  document.getElementById('r0_m_a').textContent = fmtD(a_m);
+  document.getElementById('r0_m_l').textContent = fmtD(l_m);
+  setWin('r0_m_w', a_m, l_m, true, 'Achat', 'Location');
+
+  document.getElementById('r0_t_a').textContent = fmtD(a_net);
+  document.getElementById('r0_t_l').textContent = fmtD(l_total);
+  setWin('r0_t_w', a_net, l_total, true, 'Achat', 'Location');
+
+  document.getElementById('r0_k_a').textContent = fmtC(a_km_c);
+  document.getElementById('r0_k_l').textContent = fmtC(l_km_c);
+  setWin('r0_k_w', a_km_c, l_km_c, true, 'Achat', 'Location');
+
+  document.getElementById('r0_av_a').textContent = fmtD(a_resid_val);
+  document.getElementById('r0_av_l').textContent = '0 $';
+  const avEl = document.getElementById('r0_av_w');
+  avEl.textContent = a_resid_val > 0 ? '✓ Achat (actif conservé)' : 'Équivalent';
+  avEl.className = 'kpi-winner win-a';
+
+  // Insights
+  const diff = Math.abs(a_net - l_total);
+  const winner = a_net < l_total ? 'achat' : 'location';
+  document.getElementById('ins0_1').innerHTML = `L'achat vous laisse un actif estimé à <span class="hl">${fmtD(a_resid_val)}</span> à terme. La location génère <span class="hl-red">0 $</span> d'actif.`;
+  document.getElementById('ins0_2').innerHTML = l_km_exc > 0
+    ? `Dépassement prévu : <span class="hl-red">${fmtN(Math.max(0, l_km_reel - l_km_inc))} km/an</span> = <span class="hl-red">${fmtD(l_km_exc)}</span> en frais excédentaires.`
+    : `Kilométrage dans les limites du bail. Aucun frais excédentaire anticipé.`;
+  document.getElementById('ins0_3').innerHTML = `Le scénario <span class="hl">${winner}</span> est moins coûteux de <span class="hl">${fmtD(diff)}</span> sur la période (valeur résiduelle déduite).`;
+
+  // Tableau
+  const rows = [
+    ['Financement / paiements bail (taxes incl.)', fmtD(a_fin_total), fmtD(l_pmt_t)],
+    ['Mise de fonds', fmtD(a_mise), fmtD(l_mise)],
+    ['Assurances', fmtD(a_ass_t), fmtD(l_ass_t)],
+    ['Entretien', fmtD(a_ent_t), '—'],
+    ['Immatriculation', fmtD(a_imm_t), fmtD(l_imm_t)],
+    ['Km excédentaires', '—', fmtD(l_km_exc)],
+    ['Frais fin de bail', '—', fmtD(l_frais_fin)],
+  ];
+  let tb = rows.map(r => `<tr><td>${r[0]}</td><td class="val-a">${r[1]}</td><td class="val-b">${r[2]}</td></tr>`).join('');
+  tb += `<tr><td>Sous-total dépenses</td><td class="val-a"><strong>${fmtD(a_brut)}</strong></td><td class="val-b"><strong>${fmtD(l_total)}</strong></td></tr>`;
+  tb += `<tr><td><em>— Valeur résiduelle</em></td><td class="val-a"><em>− ${fmtD(a_resid_val)}</em></td><td>—</td></tr>`;
+  tb += `<tr class="total-row"><td>COÛT NET TOTAL</td><td class="val-a">${fmtD(a_net)}</td><td class="val-b">${fmtD(l_total)}</td></tr>`;
+  document.getElementById('tb0').innerHTML = tb;
+
+  // Chart
+  const maxM = Math.max(a_terme, l_terme);
+  const labelsAll = [];
+  for (let m = 1; m <= maxM; m++) labelsAll.push(m);
+  const step = Math.max(1, Math.floor(maxM / 12));
+  const labels = labelsAll.filter(m => m % step === 0 || m === maxM);
+
+  const dA = [], dL = [];
+  let cumA = a_mise, cumL = l_mise + l_frais_fin;
+  const mA = a_pmt + a_ass + (a_ent / 12) + (a_imm / 12);
+  const mL = l_ttc + l_ass + (l_imm / 12) + (l_km_exc / l_terme);
+  for (let m = 1; m <= maxM; m++) {
+    if (m <= a_terme) { cumA += mA; if (m === a_terme) cumA -= a_resid_val; }
+    if (m <= l_terme) cumL += mL;
+    if (labels.includes(m)) { dA.push(m <= a_terme ? +cumA.toFixed(0) : null); dL.push(m <= l_terme ? +cumL.toFixed(0) : null); }
+  }
+
+  buildLineChart('chart0', 0, labels.map(m => 'M' + m), [
+    { label: 'Achat — coût net cumulé', data: dA, borderColor: '#4e7a51', backgroundColor: 'rgba(78,122,81,0.07)', tension: 0.3, fill: true, pointRadius: 3, borderWidth: 2.5, spanGaps: true },
+    { label: 'Location — coût cumulé', data: dL, borderColor: '#018476', backgroundColor: 'rgba(1,132,118,0.07)', tension: 0.3, fill: true, pointRadius: 3, borderWidth: 2.5, spanGaps: true }
+  ]);
+
+  document.getElementById('res0').classList.add('visible');
+  setTimeout(() => document.getElementById('res0').scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
 }
 
-// Scroll smooth pour ancre hero
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', function(e) {
-    const t = document.querySelector(this.getAttribute('href'));
-    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-  });
-});
-</script>
+// ===================================
+// CALCULATEUR 2 — ÉLECTRIQUE VS ESSENCE
+// ===================================
+function calcElectrique() {
+  const v = id => parseFloat(document.getElementById(id).value) || 0;
+  const vi = id => parseInt(document.getElementById(id).value) || 0;
 
+  const e_prix = v('e_prix'), e_rabais = v('e_rabais'), e_conso = v('e_conso');
+  const e_tarif = v('e_tarif') / 100, e_ent = v('e_entretien'), e_ass = v('e_assurance'), e_borne = v('e_borne');
+
+  const g_prix = v('g_prix'), g_rabais = v('g_rabais'), g_conso = v('g_conso');
+  const g_essence = v('g_prix_essence'), g_ent = v('g_entretien'), g_ass = v('g_assurance');
+
+  const taux = v('ev_taux'), terme = vi('ev_terme'), km_an = v('ev_km');
+  const annees = terme / 12;
+
+  // Coût énergie/an
+  const e_energie_an = (e_conso / 100) * km_an * e_tarif;
+  const g_energie_an = (g_conso / 100) * km_an * g_essence;
+
+  // Financement
+  const e_ttc = (e_prix - e_rabais) * (1 + TAXES);
+  const g_ttc = (g_prix - g_rabais) * (1 + TAXES);
+  const e_pmt = pmt(e_ttc, taux, terme);
+  const g_pmt = pmt(g_ttc, taux, terme);
+
+  const e_fin_t = e_pmt * terme;
+  const g_fin_t = g_pmt * terme;
+  const e_energie_t = e_energie_an * annees;
+  const g_energie_t = g_energie_an * annees;
+  const e_ent_t = e_ent * annees;
+  const g_ent_t = g_ent * annees;
+  const e_ass_t = e_ass * terme;
+  const g_ass_t = g_ass * terme;
+
+  const e_total = e_fin_t + e_energie_t + e_ent_t + e_ass_t + e_borne;
+  const g_total = g_fin_t + g_energie_t + g_ent_t + g_ass_t;
+
+  const e_m = e_pmt + (e_energie_an / 12) + (e_ent / 12) + e_ass;
+  const g_m = g_pmt + (g_energie_an / 12) + (g_ent / 12) + g_ass;
+
+  const eco = g_total - e_total;
+
+  // KPIs
+  document.getElementById('r1_m_a').textContent = fmtD(e_m);
+  document.getElementById('r1_m_b').textContent = fmtD(g_m);
+  setWin('r1_m_w', e_m, g_m, true, 'Électrique', 'Essence');
+
+  document.getElementById('r1_t_a').textContent = fmtD(e_total);
+  document.getElementById('r1_t_b').textContent = fmtD(g_total);
+  setWin('r1_t_w', e_total, g_total, true, 'Électrique', 'Essence');
+
+  document.getElementById('r1_e_a').textContent = fmtD(e_energie_t);
+  document.getElementById('r1_e_b').textContent = fmtD(g_energie_t);
+  setWin('r1_e_w', e_energie_t, g_energie_t, true, 'Électrique', 'Essence');
+
+  const ecoEl = document.getElementById('r1_eco');
+  ecoEl.textContent = fmtD(Math.abs(eco));
+  const ecoWEl = document.getElementById('r1_eco_w');
+  if (eco > 0) { ecoWEl.textContent = '✓ Électrique moins coûteux'; ecoWEl.className = 'kpi-winner win-a'; }
+  else if (eco < 0) { ecoWEl.textContent = '✓ Essence moins coûteux'; ecoWEl.className = 'kpi-winner win-b'; }
+  else { ecoWEl.textContent = 'Équivalent'; ecoWEl.className = 'kpi-winner equal'; }
+
+  // Insights
+  const eco_energie = g_energie_t - e_energie_t;
+  const eco_entretien = g_ent_t - e_ent_t;
+  // Point d'équilibre (mois approx)
+  const diff_m = g_m - e_m;
+  const diff_init = (e_ttc - g_ttc) + e_borne;
+  const pb_mois = diff_init > 0 && diff_m > 0 ? Math.ceil(diff_init / diff_m) : null;
+
+  document.getElementById('ins1_1').innerHTML = `Économie d'énergie sur ${fmtN(annees, 0)} an(s) : <span class="hl">${fmtD(eco_energie > 0 ? eco_energie : 0)}</span>. Le VÉ consomme ${fmtN(e_energie_an)} $/an vs ${fmtN(g_energie_an)} $/an pour l'essence.`;
+  document.getElementById('ins1_2').innerHTML = `Entretien réduit estimé : <span class="hl">${fmtD(eco_entretien > 0 ? eco_entretien : 0)}</span> sur le terme. Un VÉ nécessite moins de vidanges d'huile et de pièces d'usure.`;
+  document.getElementById('ins1_3').innerHTML = pb_mois
+    ? `Point d'équilibre estimé : <span class="hl">~${pb_mois} mois</span> pour amortir la différence de prix initial grâce aux économies d'opération.`
+    : `Le VÉ est moins cher dès le départ grâce aux rabais. Il n'y a pas de surcoût initial à récupérer.`;
+
+  // Tableau
+  const rows = [
+    ['Financement (prix net après rabais, taxes incl.)', fmtD(e_fin_t), fmtD(g_fin_t)],
+    ['Énergie (électricité / essence)', fmtD(e_energie_t), fmtD(g_energie_t)],
+    ['Entretien', fmtD(e_ent_t), fmtD(g_ent_t)],
+    ['Assurances', fmtD(e_ass_t), fmtD(g_ass_t)],
+    ['Borne de recharge', fmtD(e_borne), '—'],
+    ['Rabais appliqués', `− ${fmtD(e_rabais)}`, `− ${fmtD(g_rabais)}`],
+  ];
+  let tb = rows.map(r => `<tr><td>${r[0]}</td><td class="val-a">${r[1]}</td><td class="val-b">${r[2]}</td></tr>`).join('');
+  tb += `<tr class="total-row"><td>TOTAL SUR TERME</td><td class="val-a">${fmtD(e_total)}</td><td class="val-b">${fmtD(g_total)}</td></tr>`;
+  document.getElementById('tb1').innerHTML = tb;
+
+  // Chart
+  const labels = [], dE = [], dG = [];
+  let cumE = e_borne, cumG = 0;
+  const step = Math.max(1, Math.floor(terme / 12));
+  for (let m = 1; m <= terme; m++) {
+    cumE += e_pmt + (e_energie_an / 12) + (e_ent / 12) + e_ass;
+    cumG += g_pmt + (g_energie_an / 12) + (g_ent / 12) + g_ass;
+    if (m % step === 0 || m === terme) {
+      labels.push('M' + m);
+      dE.push(+cumE.toFixed(0));
+      dG.push(+cumG.toFixed(0));
+    }
+  }
+
+  buildLineChart('chart1', 1, labels, [
+    { label: 'Électrique — coût cumulé', data: dE, borderColor: '#4e7a51', backgroundColor: 'rgba(78,122,81,0.07)', tension: 0.3, fill: true, pointRadius: 3, borderWidth: 2.5 },
+    { label: 'Essence — coût cumulé', data: dG, borderColor: '#018476', backgroundColor: 'rgba(1,132,118,0.07)', tension: 0.3, fill: true, pointRadius: 3, borderWidth: 2.5 }
+  ]);
+
+  document.getElementById('res1').classList.add('visible');
+  setTimeout(() => document.getElementById('res1').scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+}
+
+// ===================================
+// CALCULATEUR 3 — VOITURE VS INVESTIR
+// ===================================
+function calcInvestir() {
+  const v = id => parseFloat(document.getElementById(id).value) || 0;
+  const vi = id => parseInt(document.getElementById(id).value) || 0;
+
+  const vi_prix = v('vi_prix'), vi_mise = v('vi_mise'), vi_taux = v('vi_taux');
+  const vi_terme = vi('vi_terme'), vi_resid = v('vi_residuel') / 100;
+  const vi_ass = v('vi_assurance'), vi_ent = v('vi_entretien');
+
+  const inv_taux = v('inv_taux') / 100 / 12;
+  const inv_transport = v('inv_transport');
+  const inv_horizon = vi('inv_horizon');
+  const imp = parseFloat(document.getElementById('inv_compte').value);
+
+  const horizon_mois = inv_horizon * 12;
+
+  // Coût véhicule
+  const vi_ttc = vi_prix * (1 + TAXES);
+  const vi_pmt = pmt(vi_ttc - vi_mise, vi_taux, vi_terme);
+  const vi_m_total = vi_pmt + vi_ass + vi_ent;
+  const vi_resid_val = vi_prix * vi_resid;
+
+  // Montant investissable par mois = coût véhicule - transport minimal
+  const inv_m = Math.max(0, vi_m_total - inv_transport);
+
+  // Valeur future (versements mensuels + mise de fonds investie)
+  let portef = vi_mise;
+  const portef_series = [{ an: 0, portef: vi_mise, cout: vi_mise }];
+  let cout_cumul = vi_mise;
+
+  for (let m = 1; m <= horizon_mois; m++) {
+    portef = portef * (1 + inv_taux) + inv_m;
+    if (m <= vi_terme) cout_cumul += vi_m_total;
+    if (m % 12 === 0) portef_series.push({ an: m / 12, portef: +portef.toFixed(0), cout: +cout_cumul.toFixed(0) });
+  }
+
+  // Après remboursement du prêt, on investit aussi les anciens paiements de remboursement
+  const portef_apres_pret = function() {
+    let p = vi_mise;
+    let cout = vi_mise;
+    const series = [{ an: 0, p, cout }];
+    for (let m = 1; m <= horizon_mois; m++) {
+      const inv_this_m = m <= vi_terme ? inv_m : inv_m + vi_pmt;
+      p = p * (1 + inv_taux) + inv_this_m;
+      if (m <= vi_terme) cout += vi_m_total;
+      if (m % 12 === 0) series.push({ an: m / 12, p: +p.toFixed(0), cout: +cout.toFixed(0) });
+    }
+    return { finalVal: p, series };
+  }();
+
+  const val_finale = portef_apres_pret.finalVal * (1 - imp);
+  const interets = val_finale - (inv_m * horizon_mois + vi_mise);
+  const cout_total_v = vi_pmt * vi_terme + vi_mise + (vi_ass + vi_ent) * vi_terme - vi_resid_val;
+  const opp_cost = val_finale - vi_resid_val;
+
+  // KPIs
+  document.getElementById('r2_horizon_label').textContent = inv_horizon + ' an' + (inv_horizon > 1 ? 's' : '');
+  document.getElementById('r2_cout_v').textContent = fmtD(cout_total_v);
+  document.getElementById('r2_inv').textContent = fmtD(val_finale);
+  document.getElementById('r2_opp').textContent = fmtD(Math.max(0, opp_cost));
+  document.getElementById('r2_int').textContent = fmtD(Math.max(0, interets));
+
+  const oppEl = document.getElementById('r2_opp_w');
+  oppEl.textContent = opp_cost > 0 ? '💡 Manque à gagner potentiel' : 'Coût d\'opportunité faible';
+  oppEl.className = 'kpi-winner ' + (opp_cost > 20000 ? 'win-b' : 'equal');
+
+  // Insights
+  document.getElementById('ins2_1').innerHTML = `En investissant <span class="hl">${fmtD(inv_m)}/mois</span> pendant ${inv_horizon} ans au lieu du surcoût véhicule, vous pourriez accumuler <span class="hl">${fmtD(val_finale)}</span> grâce aux intérêts composés.`;
+  document.getElementById('ins2_2').innerHTML = `Le coût réel mensuel de votre véhicule est <span class="hl-red">${fmtD(vi_m_total)}</span> (paiement + assurance + entretien). Votre transport minimal alternatif serait <span class="hl">${fmtD(inv_transport)}</span>/mois.`;
+  document.getElementById('ins2_3').innerHTML = `Cela ne signifie pas qu'il ne faut pas de voiture. Mais comprendre ce coût d'opportunité de <span class="hl">${fmtD(Math.max(0,opp_cost))}</span> aide à faire un choix conscient et aligné avec vos objectifs.`;
+
+  // Tableau annuel
+  const series = portef_apres_pret.series;
+  let tb = series.filter(r => r.an > 0).map(r => {
+    const ecart = r.p - r.cout;
+    return `<tr><td>${r.an} an${r.an > 1 ? 's' : ''}</td><td class="val-b">${fmtD(r.p)}</td><td class="val-a">${fmtD(r.cout)}</td><td class="${ecart >= 0 ? 'val-b' : 'val-a'}">${ecart >= 0 ? '+' : ''}${fmtD(ecart)}</td></tr>`;
+  }).join('');
+  document.getElementById('tb2').innerHTML = tb;
+
+  // Chart
+  const chartLabels = series.map(r => r.an === 0 ? 'Départ' : r.an + ' ans');
+  const dPortef = series.map(r => r.p);
+  const dCout = series.map(r => r.cout);
+
+  buildLineChart('chart2', 2, chartLabels, [
+    { label: 'Valeur du portefeuille', data: dPortef, borderColor: '#018476', backgroundColor: 'rgba(1,132,118,0.08)', tension: 0.4, fill: true, pointRadius: 3, borderWidth: 2.5 },
+    { label: 'Coût cumulé véhicule', data: dCout, borderColor: '#4e7a51', backgroundColor: 'rgba(78,122,81,0.06)', tension: 0.4, fill: true, pointRadius: 3, borderWidth: 2, borderDash: [6,3] }
+  ]);
+
+  document.getElementById('res2').classList.add('visible');
+  setTimeout(() => document.getElementById('res2').scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+}
+</script>
 </body>
 </html>
